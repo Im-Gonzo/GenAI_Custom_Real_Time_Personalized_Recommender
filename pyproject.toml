@@ -1,0 +1,27 @@
+[project]
+name = "genai-recommender-system"
+version = "0.1.0"
+description = "Generate AI Recommender System build on top of GCP"
+readme = "README.md"
+requires-python = ">=3.11,<3.13"
+dependencies = [
+    "altair>=4.2.2",
+    "catboost==1.2",
+    "huggingface-hub==0.24.7",
+    "ipykernel>=6.29.5",
+    "loguru>=0.7.2",
+    "nbformat>=5.10.4",
+    "polars==1.9.0",
+    "pydantic-settings>=2.6.1",
+    "sentence-transformers==2.2.2",
+    "streamlit==1.28.2",
+    "tensorflow-recommenders==0.7.2",
+    "tensorflow==2.14",
+    "google-cloud (>=0.34.0,<0.35.0)",
+    "google-cloud-aiplatform (>=1.79.0,<2.0.0)",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.7.2",
+]
