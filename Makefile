@@ -1,69 +1,159 @@
-.PHONY: format lint install clean help check-env
-
-# Colors for terminal output
+# Colors for better output
 BLUE := \033[1;34m
-NC := \033[0m # No Color
 GREEN := \033[1;32m
 RED := \033[1;31m
 YELLOW := \033[1;33m
+NC := \033[0m # No Color
 
-# Python settings
+# Configuration
 PYTHON := python3
-VENV := .venv
-PIP := $(VENV)/bin/pip
+TERRAFORM := terraform
+GCLOUD := gcloud
 
-help:
-	@echo "$(BLUE)Available commands:$(NC)"
-	@echo "$(GREEN)make install$(NC)      - Install all dependencies using poetry"
-	@echo "$(GREEN)make format$(NC)       - Format code using ruff"
-	@echo "$(GREEN)make check$(NC)        - Check code format without making changes"
-	@echo "$(GREEN)make lint$(NC)         - Run linting checks"
-	@echo "$(GREEN)make clean$(NC)        - Clean up cache and build files"
-	@echo "$(GREEN)make check-env$(NC)    - Verify environment variables"
+# Project configuration
+PROJECT_ID ?= recsys-dev-gonzo
+REGION ?= us-central1
+ZONE ?= us-central1-a
 
-install:
-	@echo "$(BLUE)Installing project dependencies...$(NC)"
-	poetry install
+.PHONY: help setup install-tools verify-tools setup-gcp setup-local tf-init tf-plan tf-apply tf-destroy format lint test
 
-format:
-	@echo "$(BLUE)Formatting code with ruff...$(NC)"
-	poetry run ruff format .
-	@echo "$(BLUE)Organizing imports...$(NC)"
-	poetry run ruff check --select I --fix .
-	@echo "$(GREEN)Formatting complete!$(NC)"
+help: ## Show this help message
+	@echo '${BLUE}Usage:${NC}'
+	@echo '  make ${GREEN}<target>${NC}'
+	@echo ''
+	@echo '${BLUE}Targets:${NC}'
+	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  ${GREEN}%-15s${NC} %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-check:
-	@echo "$(BLUE)Checking code format...$(NC)"
-	poetry run ruff format . --check
-	poetry run ruff check --select I .
+setup: install-tools verify-tools setup-gcp setup-local ## Complete setup process
 
-lint:
-	@echo "$(BLUE)Running linting checks...$(NC)"
-	poetry run ruff check .
-	@echo "$(GREEN)Linting complete!$(NC)"
+install-tools: ## Install required tools
+	@echo "${BLUE}Installing required tools...${NC}"
+	@if ! command -v brew &> /dev/null; then \
+		/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
+	fi
+	@if ! command -v terraform &> /dev/null; then \
+		brew tap hashicorp/tap && brew install hashicorp/tap/terraform; \
+	fi
+	@if ! command -v gcloud &> /dev/null; then \
+		brew install --cask google-cloud-sdk; \
+	fi
+	@if ! command -v poetry &> /dev/null; then \
+		curl -sSL https://install.python-poetry.org | python3 -; \
+	fi
+	@poetry install
 
-clean:
-	@echo "$(BLUE)Cleaning up...$(NC)"
-	rm -rf .ruff_cache
-	find . -type d -name "__pycache__" -exec rm -rf {} +
-	find . -type d -name ".pytest_cache" -exec rm -rf {} +
-	find . -type d -name "*.egg-info" -exec rm -rf {} +
-	find . -type f -name "*.pyc" -delete
-	@echo "$(GREEN)Clean up complete!$(NC)"
+verify-tools: ## Verify tool installations
+	@echo "${BLUE}Verifying installations...${NC}"
+	@terraform version || (echo "${RED}Terraform not installed${NC}" && exit 1)
+	@gcloud version || (echo "${RED}Google Cloud SDK not installed${NC}" && exit 1)
+	@poetry --version || (echo "${RED}Poetry not installed${NC}" && exit 1)
+	@python3 --version || (echo "${RED}Python not installed${NC}" && exit 1)
 
-check-env:
-	@echo "$(BLUE)Checking environment variables...$(NC)"
-	@if [ ! -f .env ]; then \
-		echo "$(RED)Error: .env file not found$(NC)"; \
-		echo "$(YELLOW)Please create .env file from .env.example$(NC)"; \
+setup-gcp: ## Set up GCP project and enable APIs
+	@echo "${BLUE}Setting up GCP project...${NC}"
+	@gcloud projects create $(PROJECT_ID) --name="Recommender System" || true
+	@gcloud config set project $(PROJECT_ID)
+	@for api in cloudresourcemanager.googleapis.com aiplatform.googleapis.com \
+               artifactregistry.googleapis.com gemini.googleapis.com \
+               iam.googleapis.com compute.googleapis.com; do \
+		echo "Enabling $$api..."; \
+		gcloud services enable $$api; \
+	done
+	@echo "${GREEN}Creating service account...${NC}"
+	@gcloud iam service-accounts create terraform-sa \
+		--description="Service Account for Terraform" \
+		--display-name="Terraform Service Account" || true
+	@gcloud projects add-iam-policy-binding $(PROJECT_ID) \
+		--member="serviceAccount:terraform-sa@$(PROJECT_ID).iam.gserviceaccount.com" \
+		--role="roles/owner"
+	@gcloud iam service-accounts keys create terraform-sa-key.json \
+		--iam-account=terraform-sa@$(PROJECT_ID).iam.gserviceaccount.com
+
+setup-local: ## Set up local environment
+	@echo "${BLUE}Setting up local environment...${NC}"
+	@cp .env.example .env
+	@echo "GOOGLE_APPLICATION_CREDENTIALS=$(PWD)/terraform-sa-key.json" >> .env
+	@echo "PROJECT_ID=$(PROJECT_ID)" >> .env
+	@echo "REGION=$(REGION)" >> .env
+	@echo "ZONE=$(ZONE)" >> .env
+
+tf-init: ## Initialize Terraform
+	@echo "${BLUE}Initializing Terraform...${NC}"
+	@cd terraform && terraform init
+
+tf-plan: ## Plan Terraform changes
+	@echo "${BLUE}Planning Terraform changes...${NC}"
+	@cd terraform && terraform plan
+
+tf-apply: ## Apply Terraform changes
+	@echo "${BLUE}Applying Terraform changes...${NC}"
+	@cd terraform && terraform apply -auto-approve
+
+tf-destroy: ## Destroy Terraform resources
+	@echo "${RED}Destroying Terraform resources...${NC}"
+	@cd terraform && terraform destroy
+
+format: ## Format code
+	@echo "${BLUE}Formatting code...${NC}"
+	@terraform fmt -recursive terraform/
+	@poetry run ruff format .
+
+lint: ## Run linting
+	@echo "${BLUE}Running linters...${NC}"
+	@poetry run ruff check .
+	@cd terraform && terraform fmt -check -recursive
+
+test: ## Run tests
+	@echo "${BLUE}Running tests...${NC}"
+	@poetry run pytest
+
+deploy-all: tf-init tf-plan tf-apply ## Deploy all resources
+
+clean: ## Clean up local files
+	@echo "${BLUE}Cleaning up...${NC}"
+	@rm -rf terraform/.terraform
+	@rm -f terraform/.terraform.lock.hcl
+	@rm -f terraform/terraform.tfstate*
+	@rm -f terraform-sa-key.json
+	@find . -type d -name "__pycache__" -exec rm -r {} +
+	@find . -type d -name ".pytest_cache" -exec rm -r {} +
+
+auth-fix: ## Fix authentication issues
+	@echo "${BLUE}Fixing authentication...${NC}"
+	@gcloud auth application-default login
+	@gcloud auth configure-docker
+
+tf-refresh: ## Refresh Terraform state
+	@echo "${BLUE}Refreshing Terraform state...${NC}"
+	@cd terraform && terraform refresh
+
+tf-clean: clean tf-init ## Clean and reinitialize Terraform
+
+fix-env: ## Fix environment issues
+	@echo "${BLUE}Fixing environment...${NC}"
+	@cp .env.example .env
+	@echo "${GREEN}Please update .env with your values${NC}"
+
+# Monitoring commands
+status: ## Check system status
+	@echo "${BLUE}Checking system status...${NC}"
+	@gcloud container clusters get-credentials $(PROJECT_ID) --region $(REGION)
+	@kubectl get pods
+
+logs: ## View component logs
+	@if [ -z "$(COMPONENT)" ]; then \
+		echo "${RED}Please specify COMPONENT=<component-name>${NC}"; \
 		exit 1; \
 	fi
-	@echo "$(GREEN)Environment file exists.$(NC)"
-	@$(PYTHON) -c 'from recsys.config import settings; print("Environment variables loaded successfully!")'
+	@echo "${BLUE}Viewing logs for $(COMPONENT)...${NC}"
+	@gcloud logging read "resource.type=aiplatform.googleapis.com/$(COMPONENT)"
 
-# Development task groups
-dev-setup: install check-env
-	@echo "$(GREEN)Development environment setup complete!$(NC)"
+# Development shortcuts
+dev-setup: setup ## Setup development environment
+	@echo "${BLUE}Setting up development environment...${NC}"
+	@poetry install --with dev
+	@pre-commit install
 
-dev-check: format lint
-	@echo "$(GREEN)Code checks complete!$(NC)"
+commit: ## Commit changes with conventional commits
+	@echo "${BLUE}Committing changes...${NC}"
+	@git cz
