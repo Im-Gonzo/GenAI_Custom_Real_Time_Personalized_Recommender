@@ -200,5 +200,3 @@ Common issues and solutions:
    Required roles:
    - `roles/aiplatform.user`
    - `roles/aiplatform.admin` (for agent creation)
-
-[Previous sections about Contributing and Support remain the same...]
