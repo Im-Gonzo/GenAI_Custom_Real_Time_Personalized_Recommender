@@ -1,0 +1,23 @@
+# Core dependencies
+google-cloud-aiplatform
+google-cloud-storage
+google-auth
+
+# Development dependencies
+black
+isort
+ruff
+pytest
+pre-commit
+
+# Project specific
+pandas
+numpy
+scikit-learn
+torch
+tensorflow
+loguru
+
+# Documentation
+mkdocs
+mkdocs-material
