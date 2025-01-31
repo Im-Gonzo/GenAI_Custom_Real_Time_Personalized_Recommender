@@ -1,0 +1,28 @@
+# Core Settings
+project_id = "your-project-id"
+region     = "us-central1"
+
+# Feature Store
+feature_store_id = "recsys-feature-store"
+
+# Storage Buckets
+storage_buckets = {
+  data = {
+    name          = "recsys-data"
+    location      = "US"
+    storage_class = "STANDARD"
+  }
+  models = {
+    name          = "recsys-models"
+    location      = "US"
+    storage_class = "STANDARD"
+  }
+  artifacts = {
+    name          = "recsys-artifacts"
+    location      = "US"
+    storage_class = "STANDARD"
+  }
+}
+
+# Service Accounts
+feature_store_service_account = "feature-store-sa"
