@@ -80,12 +80,6 @@ flowchart TB
     FS2 --> M3
     FS3 --> M3
 
-style FS1 fill:#f9f,stroke:#333
-style FS2 fill:#f9f,stroke:#333
-style FS3 fill:#f9f,stroke:#333
-style M1 fill:#bbf,stroke:#333
-style M2 fill:#bbf,stroke:#333
-style M3 fill:#bbf,stroke:#333
 ```
 
 ## 🔄 Feature Processing Pipeline
