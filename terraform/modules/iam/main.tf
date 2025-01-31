@@ -10,7 +10,7 @@ resource "google_project_iam_member" "feature_store_roles" {
     "roles/aiplatform.featureStoreAdmin",
     "roles/storage.objectViewer"
   ])
-  
+
   project = var.project_id
   role    = each.value
   member  = "serviceAccount:${google_service_account.feature_store_sa.email}"

@@ -1,9 +1,9 @@
 resource "google_vertex_ai_featurestore" "featurestore" {
-  name        = var.feature_store_id
-  project    = var.project_id
-  region      = var.region
-  labels      = var.labels
-  
+  name    = var.feature_store_id
+  project = var.project_id
+  region  = var.region
+  labels  = var.labels
+
   online_serving_config {
     scaling {
       min_node_count = 1
@@ -14,9 +14,9 @@ resource "google_vertex_ai_featurestore" "featurestore" {
 
 # Entity Type: Customers
 resource "google_vertex_ai_featurestore_entitytype" "customers" {
-  name            = "customers"
-  featurestore    = google_vertex_ai_featurestore.featurestore.id
-  labels          = var.labels
+  name         = "customers"
+  featurestore = google_vertex_ai_featurestore.featurestore.id
+  labels       = var.labels
 
   monitoring_config {
     snapshot_analysis {
@@ -27,9 +27,9 @@ resource "google_vertex_ai_featurestore_entitytype" "customers" {
 
 # Entity Type: Articles
 resource "google_vertex_ai_featurestore_entitytype" "articles" {
-  name            = "articles"
+  name         = "articles"
   featurestore = google_vertex_ai_featurestore.featurestore.id
-  labels          = var.labels
+  labels       = var.labels
 
   monitoring_config {
     snapshot_analysis {
@@ -40,9 +40,9 @@ resource "google_vertex_ai_featurestore_entitytype" "articles" {
 
 # Entity Type: Interactions
 resource "google_vertex_ai_featurestore_entitytype" "interactions" {
-  name            = "interactions"
+  name         = "interactions"
   featurestore = google_vertex_ai_featurestore.featurestore.id
-  labels          = var.labels
+  labels       = var.labels
 
   monitoring_config {
     snapshot_analysis {
