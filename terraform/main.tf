@@ -4,7 +4,7 @@ terraform {
   required_providers {
     google = {
       source  = "hashicorp/google"
-      version = "~> 4.0"
+      version = "6.18.1"
     }
   }
 
@@ -28,12 +28,12 @@ module "feature_store" {
 }
 
 # Vertex AI Module
-module "vertex_ai" {
-  source = "./modules/vertex-ai"
+# module "vertex_ai" {
+#   source = "./modules/vertex-ai"
 
-  project_id = var.project_id
-  region     = var.region
-}
+#   project_id = var.project_id
+#   region     = var.region
+# }
 
 # Storage Module
 module "storage" {

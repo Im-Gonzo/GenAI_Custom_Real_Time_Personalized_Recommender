@@ -1,7 +1,7 @@
 variable "project_id" {
   description = "The ID of the GCP project"
   type        = string
-  default     = "genai-recsys"
+  default     = "recsys-dev-gonzo"
 }
 
 variable "region" {
@@ -13,7 +13,7 @@ variable "region" {
 variable "feature_store_id" {
   description = "ID for the Vertex AI Feature Store"
   type        = string
-  default     = "recsys-feature-store"
+  default     = "recsys_feature_store"
 }
 
 variable "storage_buckets" {
@@ -25,17 +25,17 @@ variable "storage_buckets" {
   }))
   default = {
     data = {
-      name          = "recsys-data"
+      name          = "gonzo-recsys-data"
       location      = "US"
       storage_class = "STANDARD"
     }
     models = {
-      name          = "recsys-models"
+      name          = "gonzo-recsys-models"
       location      = "US"
       storage_class = "STANDARD"
     }
     artifacts = {
-      name          = "recsys-artifacts"
+      name          = "gonzo-recsys-artifacts"
       location      = "US"
       storage_class = "STANDARD"
     }

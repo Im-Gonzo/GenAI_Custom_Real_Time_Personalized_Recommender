@@ -1,22 +1,18 @@
-resource "google_vertex_ai_featurestore" "featurestore" {
-  name    = var.feature_store_id
-  project = var.project_id
-  region  = var.region
-  labels  = var.labels
+resource "google_vertex_ai_feature_online_store" "featurestore" {
+  name          = var.feature_store_id
+  project       = var.project_id
+  region        = var.region
+  labels        = var.labels
+  force_destroy = false
 
-  online_serving_config {
-    scaling {
-      min_node_count = 1
-      max_node_count = 2
-    }
-  }
+  optimized {}
 }
 
 # Entity Type: Customers
 resource "google_vertex_ai_featurestore_entitytype" "customers" {
-  name         = "customers"
-  featurestore = google_vertex_ai_featurestore.featurestore.id
-  labels       = var.labels
+  name          = "customers"
+  featurestore = google_vertex_ai_feature_online_store.featurestore.id
+  labels        = var.labels
 
   monitoring_config {
     snapshot_analysis {
@@ -27,9 +23,9 @@ resource "google_vertex_ai_featurestore_entitytype" "customers" {
 
 # Entity Type: Articles
 resource "google_vertex_ai_featurestore_entitytype" "articles" {
-  name         = "articles"
-  featurestore = google_vertex_ai_featurestore.featurestore.id
-  labels       = var.labels
+  name          = "articles"
+  featurestore = google_vertex_ai_feature_online_store.featurestore.id
+  labels        = var.labels
 
   monitoring_config {
     snapshot_analysis {
@@ -40,9 +36,9 @@ resource "google_vertex_ai_featurestore_entitytype" "articles" {
 
 # Entity Type: Interactions
 resource "google_vertex_ai_featurestore_entitytype" "interactions" {
-  name         = "interactions"
-  featurestore = google_vertex_ai_featurestore.featurestore.id
-  labels       = var.labels
+  name          = "interactions"
+  featurestore = google_vertex_ai_feature_online_store.featurestore.id
+  labels        = var.labels
 
   monitoring_config {
     snapshot_analysis {

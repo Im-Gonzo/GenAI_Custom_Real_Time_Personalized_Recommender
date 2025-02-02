@@ -1,6 +1,6 @@
 output "feature_store_id" {
   description = "ID of the created feature store"
-  value       = google_vertex_ai_featurestore.main.name
+  value       = google_vertex_ai_feature_online_store.featurestore.name
 }
 
 output "customer_entitytype_id" {
