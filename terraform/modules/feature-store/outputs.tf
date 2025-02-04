@@ -5,15 +5,15 @@ output "feature_store_id" {
 
 output "customer_entitytype_id" {
   description = "ID of the customers entity type"
-  value       = google_vertex_ai_featurestore_entitytype.customers.name
+  value       = google_vertex_ai_feature_online_store_featureview.customers.name
 }
 
 output "articles_entitytype_id" {
   description = "ID of the articles entity type"
-  value       = google_vertex_ai_featurestore_entitytype.articles.name
+  value       = google_vertex_ai_feature_online_store_featureview.articles.name
 }
 
 output "interactions_entitytype_id" {
   description = "ID of the interactions entity type"
-  value       = google_vertex_ai_featurestore_entitytype.interactions.name
+  value       = google_vertex_ai_feature_online_store_featureview.interactions.name
 }

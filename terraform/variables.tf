@@ -13,7 +13,13 @@ variable "region" {
 variable "feature_store_id" {
   description = "ID for the Vertex AI Feature Store"
   type        = string
-  default     = "recsys_feature_store"
+  default     = "recsys_feature_store_dev"
+}
+
+variable "dataset_id" {
+  description = "The ID of the BigQuery Dataset"
+  type = string
+  default = "recsys_dataset"
 }
 
 variable "storage_buckets" {

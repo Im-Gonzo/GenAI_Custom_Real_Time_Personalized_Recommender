@@ -18,3 +18,8 @@ variable "labels" {
   type        = map(string)
   default     = {}
 }
+
+variable "dataset_id" {
+  description = "The ID of the BigQuery Dataset"
+  type        = string
+}
