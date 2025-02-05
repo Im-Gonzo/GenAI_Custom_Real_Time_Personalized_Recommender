@@ -33,7 +33,7 @@ class DatasetSampler:
             f"Number of transactions for all the customers: {transactions_df.height}"
         )
         transactions_df = transactions_df.join(
-            customers_df.select["customer_id"], on="customer_id"
+            customers_df.select("customer_id"), on="customer_id"
         )
         logger.info(
             f"Number of transactions for the {n_customers} sampled customers: {transactions_df.height}"
@@ -52,7 +52,7 @@ def drop_na_age(df: pl.DataFrame) -> pl.DataFrame:
     return df.drop_nulls(subset=["age"])
 
 
-def create_age_group(df: pl.DataFrame) -> pl.Expr:
+def create_age_group() -> pl.Expr:
     """Create an expression to categorize into groups"""
 
     return (
@@ -77,7 +77,7 @@ def compute_features_customers(
 ) -> pl.DataFrame:
     """Prepares customer data by performing several data cleaning and transformation steps"""
 
-    required_columns = ["customer_id", "club_memeber_status", "age", "postal_code"]
+    required_columns = ["customer_id", "club_member_status", "age", "postal_code"]
     missing_columns = [col for col in required_columns if col not in df.columns]
 
     if missing_columns:
@@ -88,7 +88,7 @@ def compute_features_customers(
     df = (
         df.pipe(fill_missing_club_member_status)
         .pipe(drop_na_age)
-        .with_columns(create_age_group(), pl.col("age").cast(pl.Float64))
+        .with_columns([create_age_group(), pl.col("age").cast(pl.Float64)])
         .select(
             ["customer_id", "club_member_status", "age", "postal_code", "age_group"]
         )

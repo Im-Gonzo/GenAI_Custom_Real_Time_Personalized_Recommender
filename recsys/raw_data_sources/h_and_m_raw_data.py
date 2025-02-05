@@ -1,25 +1,23 @@
 import polars as pl
+from recsys.config import settings
 
 
-# TO-DO
-# REPLACE READ_CSV TO READ_GCS
-# UPLOAD THIS TO GCS
 def extract_articles_df() -> pl.DataFrame:
     return pl.read_csv(
-        "https://repo.hops.works/dev/jdowling/h-and-m/articles.csv",
+        f"gs://{settings.GCS_DATA_BUCKET}/h-and-m/articles.csv",
         try_parse_dates=True,
     )
 
 
 def extract_customers_df() -> pl.DataFrame:
     return pl.read_csv(
-        "https://repo.hops.works/dev/jdowling/h-and-m/customers.csv",
+        f"gs://{settings.GCS_DATA_BUCKET}/h-and-m/customers.csv",
         try_parse_dates=True,
     )
 
 
 def extract_transactions_df() -> pl.DataFrame:
     return pl.read_csv(
-        "https://repo.hops.works/dev/jdowling/h-and-m/transactions_train.csv",
+        f"gs://{settings.GCS_DATA_BUCKET}/h-and-m/transactions_train.csv",
         try_parse_dates=True,
     )

@@ -1,10 +1,15 @@
-import contextlib
 import io
+import os
 import sys
+import contextlib
+
+repo_path = os.path.abspath(os.path.join(os.getcwd(), ".."))
+sys.path.append(repo_path)
 
 import polars as pl
 from sentence_transformers import SentenceTransformer
 from tqdm.auto import tqdm
+from recsys.config import settings
 
 
 def get_article_id(df: pl.DataFrame) -> pl.Series:
@@ -34,7 +39,7 @@ def create_article_description(row):
 # REFACTOR THIS PART TO USE GCS URL INSTEAD OF HOPSWORKS REPO
 def get_image_url(article_id) -> str:
     """Returns the path to the article image"""
-    url = "https://repo.hops.works/dev/jdowling/h-and-m/images/0"
+    url = f"gs://{settings.GCS_DATA_BUCKET}/h-and-m/images/0"
 
     article_id_str = str(article_id)
 
@@ -77,7 +82,7 @@ def generate_embeddings_for_dataframe(
     """Generates embeddings for a text column in a Polars DataFrame"""
 
     @contextlib.contextmanager
-    def surpress_stdout():
+    def suppress_stdout():
         new_stdout = io.StringIO()
         old_stdout = sys.stdout
         sys.stdout = new_stdout
@@ -87,23 +92,23 @@ def generate_embeddings_for_dataframe(
         finally:
             sys.stdout = old_stdout
 
-        total_rows = len(df)
-        pbar = tqdm(total=total_rows, desc="Generating embeddings...")
+    total_rows = len(df)
+    pbar = tqdm(total=total_rows, desc="Generating embeddings...")
 
-        texts = df[text_column].to_list()
+    texts = df[text_column].to_list()
 
-        all_embeddings = []
-        for i in range(0, len(texts), batch_size):
-            batch_texts = texts[i : i + batch_size]
-            with surpress_stdout():
-                batch_embeddings = model.encode(
-                    batch_texts, device=model.device, show_progress_bar=False
-                )
-            all_embeddings.extend(batch_embeddings.tolist())
-            pbar.update(len(batch_texts))
+    all_embeddings = []
+    for i in range(0, len(texts), batch_size):
+        batch_texts = texts[i : i + batch_size]
+        with suppress_stdout():
+            batch_embeddings = model.encode(
+                batch_texts, device=model.device, show_progress_bar=False
+            )
+        all_embeddings.extend(batch_embeddings.tolist())
+        pbar.update(len(batch_texts))
 
-        df_with_embeddings = df.with_columns(embeddings=pl.Series(all_embeddings))
+    df_with_embeddings = df.with_columns(embeddings=pl.Series(all_embeddings))
 
-        pbar.close()
+    pbar.close()
 
-        return df_with_embeddings
+    return df_with_embeddings

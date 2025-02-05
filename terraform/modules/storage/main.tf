@@ -23,3 +23,11 @@ resource "google_storage_bucket" "buckets" {
     }
   }
 }
+
+# Create a zero-byte object to represent the h-and-m folder
+resource "google_storage_bucket_object" "h_and_m_folder" {
+  name       = "h-and-m/"
+  content    = " " # Empty content for folder
+  bucket     = google_storage_bucket.buckets["gonzo-recsys-data"].name
+  depends_on = [google_storage_bucket.buckets]
+}
