@@ -1,28 +1,29 @@
-# Core Settings
+# GCP Settings
 project_id = "your-project-id"
 region     = "us-central1"
 
-# Feature Store
-feature_store_id = "recsys-feature-store"
+# Feature Store Settings
+feature_store_id = "recsys_feature_store_dev"
+dataset_id       = "recsys_dataset"
 
-# Storage Buckets
+# Storage Settings
 storage_buckets = {
   data = {
-    name          = "recsys-data"
+    name          = "your-recsys-data"
     location      = "US"
     storage_class = "STANDARD"
   }
   models = {
-    name          = "recsys-models"
+    name          = "your-recsys-models"
     location      = "US"
     storage_class = "STANDARD"
   }
   artifacts = {
-    name          = "recsys-artifacts"
+    name          = "your-recsys-artifacts"
     location      = "US"
     storage_class = "STANDARD"
   }
 }
 
-# Service Accounts
+# Service Account
 feature_store_service_account = "feature-store-sa"

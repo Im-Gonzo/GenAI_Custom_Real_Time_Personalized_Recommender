@@ -1,6 +1,6 @@
 locals {
   customers_schema    = file("${path.module}/schemas/customers_schema.json")
-  articles_schema    = file("${path.module}/schemas/articles_schema.json")
+  articles_schema     = file("${path.module}/schemas/articles_schema.json")
   interactions_schema = file("${path.module}/schemas/interactions_schema.json")
 }
 
@@ -18,9 +18,9 @@ resource "google_bigquery_dataset" "featurestore_dataset" {
 resource "google_bigquery_table" "recsys_featurestore_customers" {
   project             = var.project_id
   deletion_protection = false
-  dataset_id         = google_bigquery_dataset.featurestore_dataset.dataset_id
-  table_id           = "recsys_customers"
-  schema             = local.customers_schema
+  dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
+  table_id            = "recsys_customers"
+  schema              = local.customers_schema
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -28,9 +28,9 @@ resource "google_bigquery_table" "recsys_featurestore_customers" {
 resource "google_bigquery_table" "recsys_featurestore_articles" {
   project             = var.project_id
   deletion_protection = false
-  dataset_id         = google_bigquery_dataset.featurestore_dataset.dataset_id
-  table_id           = "recsys_articles"
-  schema             = local.articles_schema
+  dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
+  table_id            = "recsys_articles"
+  schema              = local.articles_schema
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -38,9 +38,9 @@ resource "google_bigquery_table" "recsys_featurestore_articles" {
 resource "google_bigquery_table" "recsys_featurestore_interactions" {
   project             = var.project_id
   deletion_protection = false
-  dataset_id         = google_bigquery_dataset.featurestore_dataset.dataset_id
-  table_id           = "recsys_interactions"
-  schema             = local.interactions_schema
+  dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
+  table_id            = "recsys_interactions"
+  schema              = local.interactions_schema
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -61,36 +61,36 @@ resource "google_vertex_ai_feature_online_store" "featurestore" {
 
 
 resource "google_vertex_ai_feature_online_store_featureview" "customers" {
-  name                  = "customers"
-  project               = var.project_id
-  region                = var.region
-  feature_online_store  = google_vertex_ai_feature_online_store.featurestore.name
-  labels                = var.labels
+  name                 = "customers"
+  project              = var.project_id
+  region               = var.region
+  feature_online_store = google_vertex_ai_feature_online_store.featurestore.name
+  labels               = var.labels
 
   sync_config {
     cron = "0 0 * * *"
   }
 
   big_query_source {
-    uri = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_customers.table_id}"
+    uri               = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_customers.table_id}"
     entity_id_columns = ["customer_id"]
   }
 }
 
 
 resource "google_vertex_ai_feature_online_store_featureview" "articles" {
-  name                  = "articles"
-  project               = var.project_id
-  region                = var.region
-  feature_online_store  = google_vertex_ai_feature_online_store.featurestore.name
-  labels                = var.labels
+  name                 = "articles"
+  project              = var.project_id
+  region               = var.region
+  feature_online_store = google_vertex_ai_feature_online_store.featurestore.name
+  labels               = var.labels
 
   sync_config {
     cron = "0 0 * * *"
   }
 
   big_query_source {
-    uri = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_articles.table_id}"
+    uri               = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_articles.table_id}"
     entity_id_columns = ["article_id"]
   }
 
@@ -98,18 +98,18 @@ resource "google_vertex_ai_feature_online_store_featureview" "articles" {
 
 
 resource "google_vertex_ai_feature_online_store_featureview" "interactions" {
-  name                  = "interactions"
-  project               = var.project_id
-  region                = var.region
-  feature_online_store  = google_vertex_ai_feature_online_store.featurestore.name
-  labels                = var.labels
+  name                 = "interactions"
+  project              = var.project_id
+  region               = var.region
+  feature_online_store = google_vertex_ai_feature_online_store.featurestore.name
+  labels               = var.labels
 
   sync_config {
     cron = "0 0 * * *"
   }
 
   big_query_source {
-    uri = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_interactions.table_id}"
+    uri               = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_interactions.table_id}"
     entity_id_columns = ["customer_id", "article_id"]
   }
 }

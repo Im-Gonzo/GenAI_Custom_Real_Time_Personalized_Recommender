@@ -23,9 +23,9 @@ module "feature_store" {
   source = "./modules/feature-store"
 
   project_id       = var.project_id
-  region          = var.region
+  region           = var.region
   feature_store_id = var.feature_store_id
-  dataset_id      = var.dataset_id
+  dataset_id       = var.dataset_id
 }
 
 # Vertex AI Module

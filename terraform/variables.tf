@@ -18,8 +18,8 @@ variable "feature_store_id" {
 
 variable "dataset_id" {
   description = "The ID of the BigQuery Dataset"
-  type = string
-  default = "recsys_dataset"
+  type        = string
+  default     = "recsys_dataset"
 }
 
 variable "storage_buckets" {
