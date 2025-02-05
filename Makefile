@@ -134,26 +134,8 @@ fix-env: ## Fix environment issues
 	@cp .env.example .env
 	@echo "${GREEN}Please update .env with your values${NC}"
 
-# Monitoring commands
-status: ## Check system status
-	@echo "${BLUE}Checking system status...${NC}"
-	@gcloud container clusters get-credentials $(PROJECT_ID) --region $(REGION)
-	@kubectl get pods
-
-logs: ## View component logs
-	@if [ -z "$(COMPONENT)" ]; then \
-		echo "${RED}Please specify COMPONENT=<component-name>${NC}"; \
-		exit 1; \
-	fi
-	@echo "${BLUE}Viewing logs for $(COMPONENT)...${NC}"
-	@gcloud logging read "resource.type=aiplatform.googleapis.com/$(COMPONENT)"
-
 # Development shortcuts
 dev-setup: setup ## Setup development environment
 	@echo "${BLUE}Setting up development environment...${NC}"
 	@poetry install --with dev
 	@pre-commit install
-
-commit: ## Commit changes with conventional commits
-	@echo "${BLUE}Committing changes...${NC}"
-	@git cz
