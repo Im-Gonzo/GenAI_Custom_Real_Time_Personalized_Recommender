@@ -66,5 +66,5 @@ wheels/
 .DS_Store
 Thumbs.db
 
-# Kaggle
-terraform/kaggle.json
+# Extras
+src/
