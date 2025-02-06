@@ -47,6 +47,9 @@ class Settings(BaseSettings):
     GEMINI_AGENT_ID: str = Field(..., description="Gemini Agent ID")
     GEMINI_AGENT_API_KEY: SecretStr = Field(..., description="Gemini Agent API Key")
 
+    # BigQuery Configuration
+    BIGQUERY_DATASET_ID: str = Field(..., description="The Dataset ID")
+
     # Feature Engineering
     CUSTOMER_DATA_SIZE: CustomerDatasetSize = Field(
         default=CustomerDatasetSize.SMALL, description="Size of customer dataset to use"
