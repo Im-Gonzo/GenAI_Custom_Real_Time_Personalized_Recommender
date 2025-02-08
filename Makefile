@@ -111,10 +111,6 @@ deploy-all: tf-init tf-plan tf-apply ## Deploy all resources
 
 clean: ## Clean up local files
 	@echo "${BLUE}Cleaning up...${NC}"
-	@rm -rf terraform/.terraform
-	@rm -f terraform/.terraform.lock.hcl
-	@rm -f terraform/terraform.tfstate*
-	@rm -f terraform-sa-key.json
 	@find . -type d -name "__pycache__" -exec rm -r {} +
 	@find . -type d -name ".pytest_cache" -exec rm -r {} +
 

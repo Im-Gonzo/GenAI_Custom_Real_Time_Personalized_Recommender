@@ -15,4 +15,12 @@ TABLE_CONFIGS = {
         "primary_key": ["customer_id", "article_id"],
         "embedding_columns": [],  # No embeddings
     },
+    "recsys_transactions": {
+        "schema_file": "transactions_schema.json",
+        "primary_key": ["customer_id", "article_id"],
+        "embedding_columns": [], # No embeddings
+    },
+    "recsys_interactions": {},
+    "recsys_rankings": {},
+    "recsys_candidates": {},
 }

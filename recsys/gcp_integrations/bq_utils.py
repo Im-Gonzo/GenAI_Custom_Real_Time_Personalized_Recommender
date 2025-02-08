@@ -59,6 +59,7 @@ def upload_dataframe_to_bigquery(
     Uploads a DataFrame to BigQuery, handling embeddings and primary keys.
     """
     try:
+
         # Validate primary keys
         primary_keys = TABLE_CONFIGS[table_name]["primary_key"]
         for key in primary_keys:
@@ -69,22 +70,18 @@ def upload_dataframe_to_bigquery(
         if isinstance(df, pl.DataFrame):
             df = df.to_pandas()
 
-        # Get schema
         schema = get_table_schema(table_name)
 
-        # Convert types according to schema
         df = convert_types_for_bigquery(df, schema)
 
         # Process embeddings if any
         for embedding_col in TABLE_CONFIGS[table_name]["embedding_columns"]:
             df = process_embeddings(df, embedding_col)
 
-        # Log column types for debugging
         logger.debug("DataFrame types before upload:")
         for col, dtype in df.dtypes.items():
             logger.debug(f"{col}: {dtype}")
 
-        # Configure job
         job_config = bigquery.LoadJobConfig(
             write_disposition=write_disposition, schema=schema
         )
@@ -108,6 +105,7 @@ def load_features_to_bigquery(
     customers_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     articles_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     interactions_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
+    transactions_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     write_disposition: str = "WRITE_TRUNCATE",
 ) -> None:
     """
@@ -127,6 +125,11 @@ def load_features_to_bigquery(
         if interactions_df is not None:
             upload_dataframe_to_bigquery(
                 interactions_df, "recsys_interactions", write_disposition
+            )
+
+        if transactions_df is not None:
+            upload_dataframe_to_bigquery(
+                transactions_df, "recsys_transactions", write_disposition
             )
 
         logger.info("Successfully loaded all features")
