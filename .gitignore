@@ -26,9 +26,9 @@ terraform.rc
 
 # GCP credentials
 *-key.json
-*.json
+# *.json
 terraform-sa-key.json
-credentials.json
+# credentials.json
 
 # Environment variables
 .env
