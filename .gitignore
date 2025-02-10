@@ -28,7 +28,6 @@ terraform.rc
 *-key.json
 # *.json
 terraform-sa-key.json
-# credentials.json
 
 # Environment variables
 .env
@@ -68,3 +67,6 @@ Thumbs.db
 
 # Extras
 src/
+
+# Datasets
+data/*.csv
