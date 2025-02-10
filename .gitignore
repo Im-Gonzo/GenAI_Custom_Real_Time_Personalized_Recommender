@@ -70,3 +70,4 @@ src/
 
 # Datasets
 data/*.csv
+data/images/
