@@ -1,0 +1,86 @@
+[
+  {
+    "name": "customer_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Unique identifier for the customer"
+  },
+  {
+    "name": "article_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Unique identifier for the article"
+  },
+  {
+    "name": "age",
+    "type": "FLOAT64",
+    "mode": "REQUIRED",
+    "description": "Customer age"
+  },
+  {
+    "name": "label",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Label associated with the ranking"
+  },
+  {
+    "name": "product_type_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Type of the product"
+  },
+  {
+    "name": "product_group_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Product group name"
+  },
+  {
+    "name": "graphical_appearance_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Graphical appearance description"
+  },
+  {
+    "name": "perceived_colour_value_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Perceived color value"
+  },
+  {
+    "name": "perceived_colour_master_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Master color name"
+  },
+  {
+    "name": "department_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Department name"
+  },
+  {
+    "name": "index_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Index name"
+  },
+  {
+    "name": "index_group_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Index group name"
+  },
+  {
+    "name": "section_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Section name"
+  },
+  {
+    "name": "garment_group_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Garment group name"
+  }
+]

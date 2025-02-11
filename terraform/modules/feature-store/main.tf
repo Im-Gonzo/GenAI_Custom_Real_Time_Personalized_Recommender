@@ -3,8 +3,8 @@ locals {
   articles_schema     = file("${path.module}/schemas/articles_schema.json")
   interactions_schema = file("${path.module}/schemas/interactions_schema.json")
   transactions_schema = file("${path.module}/schemas/transactions_schema.json")
-  rankings_schema = file("${path.module}/schemas/rankings_schema.json")
-  candidates_schema = file("${path.module}/schemas/candidates_schema.json")
+  rankings_schema     = file("${path.module}/schemas/rankings_schema.json")
+  # candidates_schema = file("${path.module}/schemas/candidates_schema.json")
 }
 
 ###############
@@ -22,7 +22,7 @@ resource "google_bigquery_table" "recsys_featurestore_customers" {
   project             = var.project_id
   deletion_protection = false
   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
-  table_id            = "recsys_customers" 
+  table_id            = "recsys_customers"
   schema              = local.customers_schema
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
@@ -68,15 +68,15 @@ resource "google_bigquery_table" "recsys_featurestore_rankings" {
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
 
-resource "google_bigquery_table" "recsys_featurestore_candidates" {
-  project             = var.project_id
-  deletion_protection = false
-  dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
-  table_id            = "recsys_candidates"
-  schema              = local.candidates_schema
+# resource "google_bigquery_table" "recsys_featurestore_candidates" {
+#   project             = var.project_id
+#   deletion_protection = false
+#   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
+#   table_id            = "recsys_candidates"
+#   schema              = local.candidates_schema
 
-  depends_on = [google_bigquery_dataset.featurestore_dataset]
-}
+#   depends_on = [google_bigquery_dataset.featurestore_dataset]
+# }
 
 ##########################
 ## Feature Online Store ##
@@ -187,19 +187,19 @@ resource "google_vertex_ai_feature_online_store_featureview" "rankings" {
   }
 }
 
-resource "google_vertex_ai_feature_online_store_featureview" "candidates" {
-  name                 = "candidates"
-  project              = var.project_id
-  region               = var.region
-  feature_online_store = google_vertex_ai_feature_online_store.featurestore.name
-  labels               = var.labels
+# resource "google_vertex_ai_feature_online_store_featureview" "candidates" {
+#   name                 = "candidates"
+#   project              = var.project_id
+#   region               = var.region
+#   feature_online_store = google_vertex_ai_feature_online_store.featurestore.name
+#   labels               = var.labels
 
-  sync_config {
-    cron = "0 0 * * *"
-  }
+#   sync_config {
+#     cron = "0 0 * * *"
+#   }
 
-  big_query_source {
-    uri               = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_candidates.table_id}"
-    entity_id_columns = ["customer_id", "article_id"]
-  }
-}
+#   big_query_source {
+#     uri               = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_candidates.table_id}"
+#     entity_id_columns = ["customer_id", "article_id"]
+#   }
+# }

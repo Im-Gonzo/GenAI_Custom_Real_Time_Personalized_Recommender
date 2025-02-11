@@ -1,0 +1,32 @@
+[
+  {
+    "name": "customer_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Unique identifier for the customer"
+  },
+  {
+    "name": "club_member_status",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Customer's club membership status"
+  },
+  {
+    "name": "age",
+    "type": "FLOAT",
+    "mode": "REQUIRED",
+    "description": "Customer's age"
+  },
+  {
+    "name": "postal_code",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Customer's postal code"
+  },
+  {
+    "name": "age_group",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Age group category (0-18, 19-25, 26-35, 36-45, 46-55, 56-65, 66+)"
+  }
+]

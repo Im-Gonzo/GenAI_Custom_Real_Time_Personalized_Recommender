@@ -1,0 +1,86 @@
+[
+  {
+    "name": "article_id",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Unique identifier for the article"
+  },
+  {
+    "name": "prod_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Name of the product"
+  },
+  {
+    "name": "prod_name_length",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Length of the product name"
+  },
+  {
+    "name": "product_type_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Type of the product"
+  },
+  {
+    "name": "product_group_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Product group name"
+  },
+  {
+    "name": "graphical_appearance_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Graphical appearance description"
+  },
+  {
+    "name": "perceived_colour_value_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Perceived color value"
+  },
+  {
+    "name": "perceived_colour_master_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Master color name"
+  },
+  {
+    "name": "colour_group_code",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Color group code"
+  },
+  {
+    "name": "index_group_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Index group name"
+  },
+  {
+    "name": "section_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Section name"
+  },
+  {
+    "name": "garment_group_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Garment group name"
+  },
+  {
+    "name": "article_description",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Generated article description combining various attributes"
+  },
+  {
+    "name": "image_url",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "URL to the article image"
+  }
+]
