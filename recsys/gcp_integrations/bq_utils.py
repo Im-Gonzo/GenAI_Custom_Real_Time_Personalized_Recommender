@@ -59,7 +59,6 @@ def upload_dataframe_to_bigquery(
     Uploads a DataFrame to BigQuery, handling embeddings and primary keys.
     """
     try:
-
         # Validate primary keys
         primary_keys = TABLE_CONFIGS[table_name]["primary_key"]
         for key in primary_keys:

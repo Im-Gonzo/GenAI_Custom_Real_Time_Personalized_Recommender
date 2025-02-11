@@ -65,6 +65,9 @@ def compute_features_transactions(df: pl.DataFrame) -> pl.DataFrame:
         df.with_columns(
             [
                 pl.col("article_id").cast(pl.Utf8).alias("article_id"),
+                pl.col("t_dat")
+                .str.strptime(pl.Datetime, format="%Y-%m-%d")
+                .alias("t_dat"),
             ]
         )
         .with_columns(

@@ -35,11 +35,12 @@ def create_article_description(row):
     return description
 
 
-# TO-DO
-# REFACTOR THIS PART TO USE GCS URL INSTEAD OF HOPSWORKS REPO
-def get_image_url(article_id) -> str:
+def get_image_url(article_id, online, path) -> str:
     """Returns the path to the article image"""
-    url = f"gs://{settings.GCS_DATA_BUCKET}/h-and-m/images/0"
+    if online:
+        url = f"gs://{settings.GCS_DATA_BUCKET}/h-and-m/images/0"
+    else:
+        url = f"{path}/data/images/0"
 
     article_id_str = str(article_id)
 
@@ -50,7 +51,7 @@ def get_image_url(article_id) -> str:
     return f"{url}{folder}/0{image_name}.jpg"
 
 
-def compute_features_articles(df: pl.DataFrame) -> pl.DataFrame:
+def compute_features_articles(df: pl.DataFrame, online, path) -> pl.DataFrame:
     """Prepares the input DataFrame creating new features and dropping specific columns"""
     df = df.with_columns(
         [
@@ -63,8 +64,11 @@ def compute_features_articles(df: pl.DataFrame) -> pl.DataFrame:
     )
 
     # Add image url
-    df = df.with_columns(image_url=pl.col("article_id").map_elements(get_image_url))
-
+    df = df.with_columns(
+        image_url=pl.col("article_id").map_elements(
+            lambda x: get_image_url(article_id=x, online=online, path=path)
+        )
+    )
     # Drop null values
     df = df.select([col for col in df.columns if not df[col].is_null().any()])
 

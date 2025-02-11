@@ -1,37 +1,53 @@
 import polars as pl
 
 
-def compute_rankings(trans_fg: pl.DataFrame, articles_fg, customers_fg) -> pl.DataFrame:
-    trans_df = trans_fg.select(["article_id", "customer_id"]).read(
-        dataframe_type="polars"
-    )
+def validate_dataframes(
+    trans_df: pl.DataFrame, articles_df: pl.DataFrame, customers_df: pl.DataFrame
+):
+    required_trans_cols = ["article_id", "customer_id"]
+    required_customer_cols = ["customer_id", "age"]
+    required_article_cols = ["article_id"]
 
-    articles_df = articles_fg.select_except(
-        ["article_description", "embeddings", "image_url"]
-    ).read(dataframe_type="polars")
+    if not all(col in trans_df.columns for col in required_trans_cols):
+        raise ValueError(
+            f"Transaction dataframe missing required columns: {required_trans_cols}"
+        )
+    if not all(col in customers_df.columns for col in required_customer_cols):
+        raise ValueError(
+            f"Customers dataframe missing required columns: {required_customer_cols}"
+        )
+    if not all(col in articles_df.columns for col in required_article_cols):
+        raise ValueError(
+            f"Articles dataframe missing required columns: {required_article_cols}"
+        )
 
-    customers_df = customers_fg.select(["age", "customer_id"]).read(
-        dataframe_type="polars"
-    )
 
-    # Convert article_id for joining operation
+def compute_rankings_dataset(
+    trans_df: pl.DataFrame,
+    articles_df: pl.DataFrame,
+    customers_df: pl.DataFrame,
+) -> pl.DataFrame:
+    validate_dataframes(trans_df, articles_df, customers_df)
+
     trans_df = trans_df.with_columns(pl.col("article_id").cast(pl.Utf8))
     articles_df = articles_df.with_columns(pl.col("article_id").cast(pl.Utf8))
 
-    # Merge
-    df = trans_df.join(articles_df, on="article_id", how="left")
-    df = df.join(customers_df, on="customer_id", how="left")
+    # Get unique transactions
+    query_features = ["customer_id", "article_id"]
+    df = trans_df.select(query_features).unique()
 
-    query_features = ["customer_id", "age", "article_id"]
-    df = df.select(query_features)
+    # Join with customers data
+    df = df.join(
+        customers_df.select(["customer_id", "age"]), on="customer_id", how="left"
+    )
 
-    # Positive pairs
+    # Get positive pairs of existing transactions
     positive_pairs = df.clone()
 
-    # Calculate N of negative pairs
+    # Calculate number of negative pairs to generate
     n_neg = len(positive_pairs) * 10
 
-    # Negative pairs DataFrame
+    # Sampling negative pairs
     article_ids = (
         df.select("article_id")
         .unique()
@@ -45,8 +61,9 @@ def compute_rankings(trans_fg: pl.DataFrame, articles_fg, customers_fg) -> pl.Da
         .get_column("customer_id")
     )
 
-    other_features = df.select("age").sample(n=n_neg, with_replacement=True, seed=4)
+    other_features = df.select(["age"]).sample(n=n_neg, with_replacement=True, seed=4)
 
+    # Construct negative DataFrame
     negative_pairs = pl.DataFrame(
         {
             "article_id": article_ids,
@@ -55,37 +72,30 @@ def compute_rankings(trans_fg: pl.DataFrame, articles_fg, customers_fg) -> pl.Da
         }
     )
 
-    positive_pairs = positive_pairs.with_column(pl.lit(1).alias("label"))
-    negative_pairs = negative_pairs.with_column(pl.lit(0).alias("label"))
+    # Labeling
+    positive_pairs = positive_pairs.with_columns(pl.lit(1).alias("label"))
+    negative_pairs = negative_pairs.with_columns(pl.lit(0).alias("label"))
 
+    # Concatenate dfs
     ranking_df = pl.concat(
         [positive_pairs, negative_pairs.select(positive_pairs.columns)]
     )
 
-    # Process item features
-    item_df = articles_fg.read(dataframe_type="polars")
+    item_features = [
+        "article_id",
+        "product_type_name",
+        "product_group_name",
+        "graphical_appearance_name",
+        "perceived_colour_value_name",
+        "perceived_colour_master_name",
+        "department_name",
+        "index_name",
+        "index_group_name",
+        "section_name",
+        "garment_group_name",
+    ]
 
-    # Convert article_id to string in item_df before join
-    item_df = item_df.with_columns(pl.col("article_id").cast(pl.Utf8))
-
-    # Keep unique article_ids and selected columns
-    item_df = item_df.unique(subset=["article_id"]).select(
-        [
-            "article_id",
-            "product_type_name",
-            "product_group_name",
-            "graphical_appearance_name",
-            "colour_group_name",
-            "perceived_colour_value_name",
-            "perceived_colour_master_name",
-            "department_name",
-            "index_name",
-            "index_group_name",
-            "section_name",
-            "garment_group_name",
-        ]
-    )
-
+    item_df = articles_df.unique(subset=["article_id"]).select(item_features)
     ranking_df = ranking_df.join(item_df, on="article_id", how="left")
 
     return ranking_df

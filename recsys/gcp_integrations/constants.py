@@ -18,7 +18,7 @@ TABLE_CONFIGS = {
     "recsys_transactions": {
         "schema_file": "transactions_schema.json",
         "primary_key": ["customer_id", "article_id"],
-        "embedding_columns": [], # No embeddings
+        "embedding_columns": [],  # No embeddings
     },
     "recsys_interactions": {},
     "recsys_rankings": {},

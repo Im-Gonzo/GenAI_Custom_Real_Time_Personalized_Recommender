@@ -8,9 +8,9 @@ from recsys.config import CustomerDatasetSize
 
 class DatasetSampler:
     _SIZES: dict = {
-        CustomerDatasetSize.LARGE: 50_000,
-        CustomerDatasetSize.MEDIUM: 5_000,
-        CustomerDatasetSize.SMALL: 1_000,
+        CustomerDatasetSize.LARGE.value: 50_000,
+        CustomerDatasetSize.MEDIUM.value: 5_000,
+        CustomerDatasetSize.SMALL.value: 1_000,
     }
 
     def __init__(self, size: CustomerDatasetSize) -> None:
@@ -25,7 +25,7 @@ class DatasetSampler:
     ) -> dict[str, pl.DataFrame]:
         random.seed(27)
 
-        n_customers = self._SIZES[self._size]
+        n_customers = self._SIZES[self._size.value]
         logger.info(f"Sampling {n_customers} customers.")
         customers_df = customers_df.sample(n=n_customers)
 
