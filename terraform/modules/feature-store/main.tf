@@ -24,6 +24,7 @@ resource "google_bigquery_table" "recsys_featurestore_customers" {
   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
   table_id            = "recsys_customers"
   schema              = local.customers_schema
+  clustering          = ["customer_id"]
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -34,6 +35,7 @@ resource "google_bigquery_table" "recsys_featurestore_articles" {
   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
   table_id            = "recsys_articles"
   schema              = local.articles_schema
+  clustering          = ["article_id"]
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -44,6 +46,7 @@ resource "google_bigquery_table" "recsys_featurestore_interactions" {
   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
   table_id            = "recsys_interactions"
   schema              = local.interactions_schema
+  clustering          = ["customer_id", "article_id"]
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -54,6 +57,7 @@ resource "google_bigquery_table" "recsys_featurestore_transactions" {
   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
   table_id            = "recsys_transactions"
   schema              = local.transactions_schema
+  clustering          = ["customer_id", "article_id"]
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -64,6 +68,7 @@ resource "google_bigquery_table" "recsys_featurestore_rankings" {
   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
   table_id            = "recsys_rankings"
   schema              = local.rankings_schema
+  clustering          = ["customer_id", "article_id"]
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
