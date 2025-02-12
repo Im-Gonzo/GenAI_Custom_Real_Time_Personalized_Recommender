@@ -59,12 +59,6 @@ def upload_dataframe_to_bigquery(
     Uploads a DataFrame to BigQuery, handling embeddings and primary keys.
     """
     try:
-        # Validate primary keys
-        primary_keys = TABLE_CONFIGS[table_name]["primary_key"]
-        for key in primary_keys:
-            if key not in df.columns:
-                raise ValueError(f"Primary key '{key}' not found in DataFrame")
-
         # Convert Polars to Pandas if needed
         if isinstance(df, pl.DataFrame):
             df = df.to_pandas()
@@ -105,6 +99,7 @@ def load_features_to_bigquery(
     articles_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     interactions_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     transactions_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
+    rankings_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     write_disposition: str = "WRITE_TRUNCATE",
 ) -> None:
     """
@@ -129,6 +124,11 @@ def load_features_to_bigquery(
         if transactions_df is not None:
             upload_dataframe_to_bigquery(
                 transactions_df, "recsys_transactions", write_disposition
+            )
+
+        if rankings_df is not None:
+            upload_dataframe_to_bigquery(
+                rankings_df, "recsys_rankings", write_disposition
             )
 
         logger.info("Successfully loaded all features")

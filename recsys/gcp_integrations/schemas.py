@@ -26,7 +26,6 @@ def get_table_schema(table_name: str) -> List[bigquery.SchemaField]:
         raise ValueError(f"Unknown table: {table_name}")
 
     schema_path = get_schema_path(TABLE_CONFIGS[table_name]["schema_file"])
-
     try:
         with open(schema_path) as f:
             schema_json = json.load(f)

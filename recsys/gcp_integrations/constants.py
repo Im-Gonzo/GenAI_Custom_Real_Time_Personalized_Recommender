@@ -2,25 +2,23 @@
 TABLE_CONFIGS = {
     "recsys_customers": {
         "schema_file": "customers_schema.json",
-        "primary_key": ["customer_id"],
         "embedding_columns": [],  # No embeddings
     },
     "recsys_articles": {
         "schema_file": "articles_schema.json",
-        "primary_key": ["article_id"],
         "embedding_columns": ["embeddings"],  # Article embeddings
     },
     "recsys_interactions": {
         "schema_file": "interactions_schema.json",
-        "primary_key": ["customer_id", "article_id"],
         "embedding_columns": [],  # No embeddings
     },
     "recsys_transactions": {
         "schema_file": "transactions_schema.json",
-        "primary_key": ["customer_id", "article_id"],
         "embedding_columns": [],  # No embeddings
     },
-    "recsys_interactions": {},
-    "recsys_rankings": {},
+    "recsys_rankings": {
+        "schema_file": "rankings_schema.json",
+        "embedding_columns": [],  # No embeddings
+    },
     "recsys_candidates": {},
 }
