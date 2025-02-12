@@ -24,6 +24,7 @@ tensorflow-recommenders = "0.7.2"
 tensorflow = "2.14"
 google-cloud = ">=0.34.0,<0.35.0"
 google-cloud-aiplatform = ">=1.79.0,<2.0.0"
+db-dtypes=">=1.2.0"
 
 [tool.poetry.group.dev.dependencies]
 ruff = ">=0.7.2"
