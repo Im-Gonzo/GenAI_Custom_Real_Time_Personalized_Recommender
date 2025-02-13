@@ -123,12 +123,13 @@ def load_features_to_bigquery(
             )
 
         if transactions_df is not None:
-
             month = pl.from_epoch(transactions_df["t_dat"]).dt.month()
-            transactions_df = transactions_df.with_columns([
-                month_sin(month).alias("month_sin"),
-                month_cos(month).alias("month_cos")
-            ])
+            transactions_df = transactions_df.with_columns(
+                [
+                    month_sin(month).alias("month_sin"),
+                    month_cos(month).alias("month_cos"),
+                ]
+            )
 
             upload_dataframe_to_bigquery(
                 transactions_df, "recsys_transactions", write_disposition
