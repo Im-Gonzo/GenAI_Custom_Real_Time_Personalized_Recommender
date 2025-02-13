@@ -10,6 +10,7 @@ from recsys.config import settings
 from recsys.gcp_integrations.constants import TABLE_CONFIGS
 from recsys.gcp_integrations.embeddings import process_embeddings
 from recsys.gcp_integrations.schemas import get_table_schema
+from recsys.features.transactions import month_cos, month_sin
 
 # BigQuery to Pandas type mapping
 BQ_TO_PANDAS_TYPES = {
@@ -122,6 +123,13 @@ def load_features_to_bigquery(
             )
 
         if transactions_df is not None:
+
+            month = pl.from_epoch(transactions_df["t_dat"]).dt.month()
+            transactions_df = transactions_df.with_columns([
+                month_sin(month).alias("month_sin"),
+                month_cos(month).alias("month_cos")
+            ])
+
             upload_dataframe_to_bigquery(
                 transactions_df, "recsys_transactions", write_disposition
             )

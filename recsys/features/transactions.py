@@ -51,7 +51,7 @@ def convert_t_dat_to_epoch_milliseconds(df: pl.DataFrame) -> pl.Series:
 
 def month_cos(month: pl.Series):
     """On-Demand function to calculate the cos of the month"""
-    return np.cos(month * (2 * np.npi / 12))
+    return np.cos(month * (2 * np.pi / 12))
 
 
 def month_sin(month: pl.Series):
