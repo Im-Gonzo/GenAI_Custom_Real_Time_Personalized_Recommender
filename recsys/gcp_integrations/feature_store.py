@@ -58,18 +58,32 @@ def create_retrieval_feature_view(
 
 
 def create_training_dataset(
-        trans_fv: FeatureView,
-        articles_fv: FeatureView,
-        customers_fv: FeatureView,
+    trans_fv: FeatureView,
+    articles_fv: FeatureView,
+    customers_fv: FeatureView,
 ) -> pl.DataFrame:
-    
-    trans_df = fetch_feature_view_data(trans_fv,
-                                       select_columns=["customer_id", "article_id", "t_dat", "price", "month_sin", "month_cos"])
-    
-    customers_df = fetch_feature_view_data(customers_fv,
-                                           select_columns=["age", "club_member_status", "age_group"])
+    trans_df = fetch_feature_view_data(
+        trans_fv,
+        select_columns=[
+            "customer_id",
+            "article_id",
+            "t_dat",
+            "price",
+            "month_sin",
+            "month_cos",
+        ],
+    )
 
-    articles_df = fetch_feature_view_data(articles_fv,
-                                          select_columns=["garment_group_name", "index_group_name"])
+    customers_df = fetch_feature_view_data(
+        customers_fv,
+        select_columns=["customer_id", "age", "club_member_status", "age_group"],
+    )
 
-    return trans_df.join(customers_df, on="customer_id").join(articles_df, on="article_id")
+    articles_df = fetch_feature_view_data(
+        articles_fv,
+        select_columns=["article_id", "garment_group_name", "index_group_name"],
+    )
+
+    return trans_df.join(customers_df, on="customer_id").join(
+        articles_df, on="article_id"
+    )

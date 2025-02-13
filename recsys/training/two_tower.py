@@ -1,5 +1,6 @@
 from loguru import logger
 from recsys.config import settings
+from recsys.utils.split_utils import train_validation_test_split
 import tensorflow as tf
 import tensorflow_recommenders as tfrs
 from tensorflow.keras.layers import Normalization, StringLookup
@@ -224,8 +225,8 @@ class TwoTowerModel(tf.keras.Model):
 
 
 class TwoTowerDataset:
-    def __init__(self, feature_view, batch_size: int) -> None:
-        self._feature_view = feature_view
+    def __init__(self, training_data, batch_size: int) -> None:
+        self._training_data = training_data
         self._batch_size = batch_size
         self._properties: dict | None
 
@@ -257,13 +258,10 @@ class TwoTowerDataset:
     def get_train_val_split(self):
         logger.info("Retrieving and creating train, eval, test split...")
 
-        train_df, val_df, test_df, _, _, _ = {
-            self._feature_view.train_validation_test_split(
-                validation_size=settings.TWO_TOWER_DATASET_VALIDATION_SPLIT_SIZE,
-                test_size=settings.TWO_TOWER_DATASET_TEST_SPLIT_SIZE,
-                description="Retrieval dataset splits",
-            )
-        }
+        train_df, val_df, test_df, _, _, _ = train_validation_test_split(
+            validation_size=settings.TWO_TOWER_DATASET_VALIDATION_SPLIT_SIZE,
+            test_size=settings.TWO_TOWER_DATASET_TEST_SPLIT_SIZE,
+        )
 
         train_ds = (
             self.df_to_ds(train_df)
