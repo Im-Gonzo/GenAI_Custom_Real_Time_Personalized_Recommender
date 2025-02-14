@@ -69,7 +69,7 @@ class ItemTowerFactory:
             item_ids=self._dataset.properties["item_ids"],
             garment_groups=self._dataset.properties["garment_groups"],
             index_groups=self._dataset.properties["index_groups"],
-            embed_dim=embed_dim,
+            emb_dim=embed_dim,
         )
 
 
@@ -94,7 +94,7 @@ class ItemTower(tf.keras.Model):
         )
 
         self.garment_groups_tokenizer = StringLookup(
-            voacbulary=garment_groups,
+            vocabulary=garment_groups,
             mask_token=None,
         )
 
@@ -121,9 +121,9 @@ class ItemTower(tf.keras.Model):
             len(self.index_groups),
         )
 
-        concatenated_inputs = tf.one_hot(
+        concatenated_inputs = tf.concat(
             [
-                self.item_embedding(inputs["article_ids"]),
+                self.item_embedding(inputs["article_id"]),
                 garment_group_embedding,
                 index_group_embedding,
             ],
@@ -250,15 +250,15 @@ class TwoTowerDataset:
 
     def get_items_subset(self):
         item_df = self.properties["train_df"][self.candidate_features]
-        item_df.drop_duplicates(subset="article_id", inplace=True)
+        item_df = item_df.unique(subset=["article_id"])
         item_ds = self.df_to_ds(item_df)
-
         return item_ds
 
     def get_train_val_split(self):
         logger.info("Retrieving and creating train, eval, test split...")
 
         train_df, val_df, test_df, _, _, _ = train_validation_test_split(
+            df=self._training_data,
             validation_size=settings.TWO_TOWER_DATASET_VALIDATION_SPLIT_SIZE,
             test_size=settings.TWO_TOWER_DATASET_TEST_SPLIT_SIZE,
         )
@@ -277,16 +277,22 @@ class TwoTowerDataset:
             "val_df": val_df,
             "query_df": train_df[self.query_features],
             "item_df": train_df[self.candidate_features],
-            "user_ids": train_df["customer_id"].unique().tolist(),
-            "item_ids": train_df["article_id"].unique().tolist(),
-            "garment_groups": train_df["grament_group_name"].unique().tolist(),
-            "index_groups": train_df["index_group_name"].unique().tolist(),
+            "user_ids": train_df["customer_id"].unique().to_list(),
+            "item_ids": train_df["article_id"].unique().to_list(),
+            "garment_groups": train_df["garment_group_name"].unique().to_list(),
+            "index_groups": train_df["index_group_name"].unique().to_list(),
         }
 
         return train_ds, val_ds
 
     def df_to_ds(self, df):
-        return tf.data.Dataset.from_tensor_slices({col: df[col] for col in df})
+        """Converte Polars DataFrame to Tensorflow Dataset"""
+        cols = set(self.query_features + self.candidate_features)
+        available_cols = [col for col in cols if col in df.columns]
+
+        return tf.data.Dataset.from_tensor_slices(
+            {col: df[col] for col in available_cols}
+        )
 
 
 class TwoTowerTrainer:
@@ -318,6 +324,6 @@ class TwoTowerTrainer:
         self._model.query_model.normalized_age.adapt(train_ds.map(lambda x: x["age"]))
 
         # Initialize model with inputs
-        query_df = self._dataset.property["query_df"]
+        query_df = self._dataset.properties["query_df"]
         query_ds = self._dataset.df_to_ds(query_df).batch(1)
-        self._model.query_mode(next(iter(query_ds)))
+        self._model.query_model(next(iter(query_ds)))
