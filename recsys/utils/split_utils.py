@@ -1,8 +1,8 @@
 """Data splitting utilities."""
 
 import polars as pl
-from typing import Tuple, Optional
 import numpy as np
+from typing import Tuple, Optional
 
 
 def train_validation_test_split(
@@ -56,14 +56,22 @@ def train_validation_test_split(
             (pl.col("t_dat") >= test_start) & (pl.col("t_dat") < test_end)
         )
     else:
-        # Random split
+        # Set random seed
+        np.random.seed(seed)
+
+        # Generate random values
+        random_values = np.random.rand(len(df))
+
+        # Calculate split points
         val_point = 1.0 - (validation_size + test_size)
         test_point = 1.0 - test_size
 
-        df_with_random = df.with_columns(pl.rand(seed=seed).alias("_random")).sort(
+        # Add random values as a column
+        df_with_random = df.with_columns(pl.Series("_random", random_values)).sort(
             "_random"
         )
 
+        # Split based on random values
         train_df = df_with_random.filter(pl.col("_random") <= val_point).drop("_random")
 
         val_df = df_with_random.filter(
