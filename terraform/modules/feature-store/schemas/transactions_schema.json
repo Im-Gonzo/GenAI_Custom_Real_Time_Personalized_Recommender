@@ -1,56 +1,68 @@
 [
     {
-      "name": "t_dat",
+    "name": "t_dat",
       "type": "INTEGER",
       "mode": "REQUIRED",
       "description": "Timestamp of the transaction"
     },
     {
-      "name": "customer_id",
+    "name": "customer_id",
       "type": "STRING",
       "mode": "REQUIRED",
       "description": "Customer identifier"
     },
     {
-      "name": "article_id",
+    "name": "article_id",
       "type": "STRING",
       "mode": "REQUIRED",
       "description": "Article identifier"
     },
     {
-      "name": "price",
+    "name": "price",
       "type": "FLOAT",
       "mode": "REQUIRED",
       "description": "The total amount of the transaction"
     },
     {
-      "name": "sales_channel_id",
+    "name": "sales_channel_id",
       "type": "INTEGER",
       "mode": "NULLABLE",
       "description": "Channel ID"
     },
     {
-        "name": "year",
+      "name": "year",
       "type": "INTEGER",
       "mode": "NULLABLE",
       "description": "Year of the transaction"
     },
     {
-        "name": "month",
+      "name": "month",
       "type": "INTEGER",
       "mode": "NULLABLE",
       "description": "Month of the transaction"
     },
     {
-        "name": "day",
+      "name": "day",
       "type": "INTEGER",
       "mode": "NULLABLE",
       "description": "Day of the transaction"
     },
     {
-        "name": "day_of_week",
+      "name": "day_of_week",
       "type": "INTEGER",
       "mode": "NULLABLE",
       "description": "Day of the week of the transaction"
+    },
+    {
+      "name": "month_sin",
+      "type": "FLOAT",
+      "mode": "NULLABLE",
+      "description": "Month sin"
+    },
+    {
+      "name": "month_cos",
+      "type": "FLOAT",
+      "mode": "NULLABLE",
+      "description": "Month cos"
     }
   ]

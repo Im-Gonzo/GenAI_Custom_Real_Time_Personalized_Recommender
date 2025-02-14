@@ -29,12 +29,13 @@ module "feature_store" {
 }
 
 # Vertex AI Module
-# module "vertex_ai" {
-#   source = "./modules/vertex-ai"
+module "vertex_ai" {
+  source = "./modules/vertex-ai"
 
-#   project_id = var.project_id
-#   region     = var.region
-# }
+  project_id                = var.project_id
+  region                    = var.region
+  model_registry_repository = var.model_registry_repository
+}
 
 # Storage Module
 module "storage" {

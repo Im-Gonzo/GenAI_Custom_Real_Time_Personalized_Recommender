@@ -14,21 +14,9 @@ variable "endpoint_id" {
   default     = "recsys"
 }
 
-variable "artifact_registry_id" {
-  description = "ID for the Artifact Registry repository"
+variable "model_registry_repository" {
+  description = "Full path to the Model Registry repository"
   type        = string
-  default     = "recsys-models"
-}
-
-variable "artifact_registry_repository" {
-  description = "Full path to the Artifact Registry repository"
-  type        = string
-}
-
-variable "agent_id" {
-  description = "ID for the Vertex AI Agent (Gemini)"
-  type        = string
-  default     = "llm-ranking-agent"
 }
 
 variable "enable_monitoring" {
@@ -37,14 +25,26 @@ variable "enable_monitoring" {
   default     = false
 }
 
-variable "model_id" {
-  description = "ID of the model to monitor"
+variable "two_tower_model_id" {
+  description = "ID of the two tower model to monitor"
   type        = string
   default     = ""
 }
 
-variable "training_dataset_id" {
-  description = "ID of the training dataset for monitoring"
+variable "two_tower_training_dataset_id" {
+  description = "ID of the two tower training dataset for monitoring"
+  type        = string
+  default     = ""
+}
+
+variable "ranking_model_id" {
+  description = "ID of the ranking model to monitor"
+  type        = string
+  default     = ""
+}
+
+variable "ranking_training_dataset_id" {
+  description = "ID of the ranking training dataset for monitoring"
   type        = string
   default     = ""
 }

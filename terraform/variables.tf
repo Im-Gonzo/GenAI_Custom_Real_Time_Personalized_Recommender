@@ -53,3 +53,9 @@ variable "feature_store_service_account" {
   type        = string
   default     = "feature-store-sa"
 }
+
+variable "model_registry_repository" {
+  description = "The ID of the Model Registry"
+  type        = string
+  default     = "recsys-model-registry"
+}
