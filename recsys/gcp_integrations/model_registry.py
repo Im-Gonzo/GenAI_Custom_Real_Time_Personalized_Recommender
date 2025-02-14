@@ -16,8 +16,8 @@ def upload_model_to_registry(
     description: str,
     serving_container_image_uri: str,
 ) -> aiplatform.Model:
-    """ Upload a model to Vertex AI Model Registry """
-    
+    """Upload a model to Vertex AI Model Registry"""
+
     model_dir = f"/tmp/{model_name}"
     logger.info(f"Saving model into: {model_dir}")
     model.save(model_dir)
@@ -29,20 +29,21 @@ def upload_model_to_registry(
         serving_container_image_uri=serving_container_image_uri,
         description=description,
         serving_container_predict_route="/v1/predict",
-        serving_container_health_route="/v1/health"
+        serving_container_health_route="/v1/health",
     )
 
     logger.info(f"Model uploadded with resource name: {uploaded_model.resource_name}")
     return uploaded_model
 
 
-def deploy_model_to_endpoint(model: aiplatform.Model,
-                             endpoint_name: str,
-                             machine_type: str = "n1-standard-2",
-                             min_replica_count: int = 1,
-                             max_replica_count: int = 1,
-                             ) -> aiplatform.Endpoint:
-    """ Deploys a model to a Vertex AI Model Endpoint """
+def deploy_model_to_endpoint(
+    model: aiplatform.Model,
+    endpoint_name: str,
+    machine_type: str = "n1-standard-2",
+    min_replica_count: int = 1,
+    max_replica_count: int = 1,
+) -> aiplatform.Endpoint:
+    """Deploys a model to a Vertex AI Model Endpoint"""
     logger.info(f"Deploying model to {endpoint_name}")
     endpoint = model.deploy(
         deployed_model_display_name=endpoint_name,
