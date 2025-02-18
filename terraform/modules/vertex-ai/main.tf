@@ -32,6 +32,16 @@ resource "google_vertex_ai_endpoint" "candidate_model_endpoint" {
   depends_on = [google_project_service.vertex_ai]
 }
 
+resource "google_vertex_ai_endpoint" "rankings_model_endpoint" {
+  name         = "${var.endpoint_id}-rankings-model"
+  display_name = "${var.endpoint_id}-rankings-model"
+  location     = var.region
+  project      = var.project_id
+  description  = "Endpoint for Ranking Model"
+
+  depends_on = [google_project_service.vertex_ai]
+}
+
 # Create an Artifact Registry repository for model containers
 resource "google_artifact_registry_repository" "model_registry" {
   provider = google-beta
