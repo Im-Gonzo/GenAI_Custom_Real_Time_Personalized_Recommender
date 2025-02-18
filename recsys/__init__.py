@@ -1,3 +1,17 @@
-from . import features, gcp_integrations, raw_data_sources, config
+"""
+Recommendation system package for real-time personalized recommendations.
+"""
 
-__all__ = ["features", "gcp_integrations", "raw_data_sources", "config"]
+from . import core
+from . import data
+from . import gcp
+from . import utils
+from . import config
+
+__all__ = [
+    'core',
+    'data',
+    'gcp',
+    'utils',
+    'config'
+]
