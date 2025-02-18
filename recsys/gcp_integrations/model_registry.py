@@ -1,7 +1,10 @@
+import shutil
 import tensorflow as tf
+import os
+from xgboost import XGBModel
 
 from loguru import logger
-from typing import Optional
+from typing import Union
 from google.cloud import aiplatform
 from recsys.config import settings
 
@@ -10,7 +13,7 @@ aiplatform.init(project=settings.GCP_PROJECT, location=settings.GCP_LOCATION)
 
 
 def upload_model_to_registry(
-    model: tf.keras.Model,
+    model: Union[tf.keras.Model, XGBModel],
     model_name: str,
     model_display_name: str,
     description: str,
@@ -20,7 +23,23 @@ def upload_model_to_registry(
 
     model_dir = f"/tmp/{model_name}"
     logger.info(f"Saving model into: {model_dir}")
-    model.save(model_dir)
+    
+    if os.path.exists(model_dir):
+        shutil.rmtree(model_dir)
+
+    # Create directory if it doesn't exist
+    os.makedirs(model_dir, exist_ok=True)
+    
+    # Handle different model types
+    if isinstance(model, XGBModel):
+        # Save XGBoost model in its native format
+        model_path = os.path.join(model_dir, "model.bst")
+        model.save_model(model_path)
+    elif hasattr(model, 'save'):  # TensorFlow models
+        model.save(model_dir)
+        
+    else:
+        raise ValueError(f"Unsupported model type: {type(model)}")
 
     logger.info(f"Uploading model to {model_display_name} to Vertex AI")
     uploaded_model = aiplatform.Model.upload(
@@ -32,7 +51,7 @@ def upload_model_to_registry(
         serving_container_health_route="/v1/health",
     )
 
-    logger.info(f"Model uploadded with resource name: {uploaded_model.resource_name}")
+    logger.info(f"Model uploaded with resource name: {uploaded_model.resource_name}")
     return uploaded_model
 
 

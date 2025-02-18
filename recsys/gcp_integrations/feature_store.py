@@ -5,7 +5,7 @@ from google.cloud import aiplatform
 from vertexai.resources.preview.feature_store import FeatureOnlineStore, FeatureView
 from loguru import logger
 
-from recsys.features.ranking import fetch_feature_view_data
+from recsys.gcp_integrations.bq_utils import fetch_feature_view_data
 from recsys.config import settings
 
 
@@ -34,7 +34,7 @@ def get_feature_store():
 
 
 def create_retrieval_feature_view(
-    fos, fv_ids: List = ["transactions", "articles", "customers"]
+    fos, fv_ids: List = ["transactions", "articles", "customers", "rankings"]
 ) -> Tuple[str]:
     """
     Reads feature values from the online store.
@@ -87,3 +87,7 @@ def create_training_dataset(
     return trans_df.join(customers_df, on="customer_id").join(
         articles_df, on="article_id"
     )
+
+ 
+def create_ranking_dataset():
+    return

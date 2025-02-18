@@ -42,7 +42,7 @@ class BaseGCPModel(ABC):
         # Upload model to Vertex AI Registry
         model = upload_model_to_registry(
             model=self.model,
-            model_name=self.local_model_path,
+            model_name=model_name,
             model_display_name=model_name,
             description=description,
             serving_container_image_uri=serving_container_image_uri,
@@ -54,7 +54,7 @@ class BaseGCPModel(ABC):
         self,
         model: aiplatform.Model,
         endpoint_id: str,
-        machine_type: str = "n1-standard-4",
+        machine_type: str = "n1-standard-2",
         min_replica_count: int = 1,
         max_replica_count: int = 1,
     ) -> aiplatform.Endpoint:

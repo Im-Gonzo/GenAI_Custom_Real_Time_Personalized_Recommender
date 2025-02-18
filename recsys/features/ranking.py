@@ -5,40 +5,6 @@ from loguru import logger
 import time
 
 
-def fetch_feature_view_data(
-    feature_view: FeatureView, select_columns: list = None, except_columns: list = None
-) -> pl.DataFrame:
-    """
-    Fetch data from a feature view by querying its BigQuery source
-
-    Args:
-        feature_view: The feature view to query
-        select_columns: List of columns to select. If None and except_columns is None, selects all columns
-        except_columns: List of columns to exclude. Only used if select_columns is None
-    """
-    logger.info(f"Starting to fetch data from feature view: {feature_view.name}")
-
-    client = bigquery.Client()
-    table_ref = feature_view.gca_resource.big_query_source.uri.replace("bq://", "")
-
-    # Build query based on column selection type
-    if select_columns:
-        columns_str = ", ".join(select_columns)
-        query = f"SELECT {columns_str} FROM `{table_ref}`"
-    elif except_columns:
-        query = f"SELECT * EXCEPT({', '.join(except_columns)}) FROM `{table_ref}`"
-    else:
-        query = f"SELECT * FROM `{table_ref}`"
-
-    logger.info(f"Executing query: {query}")
-
-    query_result = client.query(query)
-    df = pl.from_pandas(query_result.to_dataframe())
-    logger.info(f"DataFrame shape: {df.shape}")
-
-    return df
-
-
 def compute_rankings_dataset(
     trans_fv: FeatureView,
     articles_fv: FeatureView,
