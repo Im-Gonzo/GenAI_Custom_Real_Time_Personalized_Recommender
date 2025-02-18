@@ -73,5 +73,5 @@ data/*.csv
 data/images/
 
 # Models
-notebooks/item_model/
-notebooks/query_model/
+notebooks/item_model
+notebooks/query_model
