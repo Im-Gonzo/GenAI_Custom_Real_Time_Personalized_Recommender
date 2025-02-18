@@ -3,7 +3,7 @@ Feature computation and management for the recommendation system.
 """
 from .article_features import (
     compute_features as compute_article_features,
-    generate_text_embeddings as generate_article_embeddings
+    generate_embeddings_for_dataframe as generate_article_embeddings
 )
 from .customer_features import (
     compute_features as compute_customer_features,

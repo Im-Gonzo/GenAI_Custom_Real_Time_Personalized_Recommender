@@ -1,6 +1,5 @@
 from enum import Enum
 from pathlib import Path
-from typing import Literal
 
 from pydantic import Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -18,9 +17,9 @@ class RankingModelType(Enum):
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8")
-
-    RECSYS_DIR: Path = Path(__file__).parent
+    
+    env_path: str = str(Path(__file__).parent.parent / ".env")
+    model_config = SettingsConfigDict(env_file=env_path, env_file_encoding="utf-8")
 
     # GCP Core Configuration
     GCP_PROJECT: str = Field(..., description="GCP Project ID")
@@ -102,6 +101,9 @@ class Settings(BaseSettings):
     RANKING_MODEL_TYPE: RankingModelType = Field(
         default=RankingModelType.RANKING, description="Type of ranking model to use"
     )
+
+    # Hugging Face
+    TOKENIZERS_PARALLELISM: bool = Field(..., description="Enable tokenizers parallelism")
 
 
 settings = Settings()

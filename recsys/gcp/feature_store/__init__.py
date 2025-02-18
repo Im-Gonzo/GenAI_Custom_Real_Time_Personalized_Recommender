@@ -1,21 +1,31 @@
 """
 Feature Store integration utilities.
 """
-
 from .client import (
-    get_feature_store_client,
-    upload_features,
-    get_features
+    initialize_feature_store,
+    get_client,
+    get_feature_views
+)
+from .datasets import (
+    create_training_dataset,
+    create_ranking_dataset
 )
 from .config import (
-    FEATURE_STORE_CONFIGS,
+    FEATURE_CONFIGS,
     get_feature_config
 )
 
 __all__ = [
-    'get_feature_store_client',
-    'upload_features',
-    'get_features',
-    'FEATURE_STORE_CONFIGS',
+    # Client
+    'initialize_feature_store',
+    'get_client',
+    'get_feature_views',
+    
+    # Datasets
+    'create_training_dataset',
+    'create_ranking_dataset',
+    
+    # Config
+    'FEATURE_CONFIGS',
     'get_feature_config'
 ]

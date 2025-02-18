@@ -83,7 +83,7 @@ def get_image_url(article_id: str, online: bool, path: Optional[str] = None) -> 
     return f"{url}{folder}/0{image_name}.jpg"
 
 
-def compute_features_articles(df: pl.DataFrame, online: bool, path: Optional[str] = None) -> pl.DataFrame:
+def compute_features(df: pl.DataFrame, online: bool, path: Optional[str] = None) -> pl.DataFrame:
     """
     Computes all article features from raw data.
     

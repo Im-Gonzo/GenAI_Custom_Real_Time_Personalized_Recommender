@@ -15,7 +15,7 @@ class CustomerDatasetSize(Enum):
     SMALL = "small"
 
 
-class DatasetSampler:
+class CustomerSampler:
     """Handles sampling of customer data for different dataset sizes."""
     
     _SIZES: Dict[str, int] = {
@@ -110,7 +110,7 @@ def create_age_group() -> pl.Expr:
     ).alias("age_group")
 
 
-def compute_features_customers(
+def compute_features(
     df: pl.DataFrame,
     drop_null_age: bool = False,
     additional_columns: Optional[list] = None

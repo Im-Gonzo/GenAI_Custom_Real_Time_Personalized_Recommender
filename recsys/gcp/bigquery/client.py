@@ -5,13 +5,14 @@ from typing import Union, Optional, Dict, List
 import pandas as pd
 import polars as pl
 from google.cloud import bigquery
+from google.cloud import aiplatform
 from loguru import logger
-from vertexai.resources.preview.feature_store import FeatureView
 
 from recsys.config import settings
 from recsys.gcp.common.constants import TABLE_CONFIGS
 from recsys.gcp.bigquery.schemas import get_table_schema
 from recsys.core.features.transaction_features import month_cos, month_sin
+from recsys.core.embeddings import process_for_storage
 
 
 # BigQuery to Pandas type mapping
@@ -84,7 +85,6 @@ def upload_dataframe(
 
         # Process embeddings if any
         for embedding_col in TABLE_CONFIGS[table_name]["embedding_columns"]:
-            from recsys.core.embeddings import process_for_storage
             df = process_for_storage(df, embedding_col)
 
         logger.debug("DataFrame types before upload:")
@@ -159,7 +159,7 @@ def load_features(
 
 
 def fetch_feature_view_data(
-    feature_view: FeatureView,
+    feature_view: aiplatform.featurestore.EntityType.Feature,
     select_columns: Optional[List[str]] = None,
     except_columns: Optional[List[str]] = None
 ) -> pl.DataFrame:
