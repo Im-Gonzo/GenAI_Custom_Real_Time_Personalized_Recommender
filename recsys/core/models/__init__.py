@@ -6,6 +6,6 @@ from . import two_tower
 # from . import ranking
 
 __all__ = [
-    'two_tower',
+    "two_tower",
     # 'ranking'
 ]

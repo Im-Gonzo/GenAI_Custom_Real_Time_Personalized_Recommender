@@ -1,6 +1,7 @@
 """
 Article feature generation and processing.
 """
+
 import io
 import sys
 import contextlib
@@ -16,10 +17,10 @@ from recsys.config import settings
 def get_article_id(df: pl.DataFrame) -> pl.Series:
     """
     Extracts and returns the article_id column as a string.
-    
+
     Args:
         df: Input DataFrame
-        
+
     Returns:
         Article ID series cast to string type
     """
@@ -29,10 +30,10 @@ def get_article_id(df: pl.DataFrame) -> pl.Series:
 def create_prod_name_length(df: pl.DataFrame) -> pl.Series:
     """
     Creates a new column representing the length of 'prod_name'.
-    
+
     Args:
         df: Input DataFrame
-        
+
     Returns:
         Series containing product name lengths
     """
@@ -42,10 +43,10 @@ def create_prod_name_length(df: pl.DataFrame) -> pl.Series:
 def create_article_description(row) -> str:
     """
     Creates a comprehensive string description of an article.
-    
+
     Args:
         row: DataFrame row containing article attributes
-        
+
     Returns:
         Formatted article description string
     """
@@ -63,12 +64,12 @@ def create_article_description(row) -> str:
 def get_image_url(article_id: str, online: bool, path: Optional[str] = None) -> str:
     """
     Generates the URL/path for an article's image.
-    
+
     Args:
         article_id: Article identifier
         online: Whether to use online or local path
         path: Base path for local images
-        
+
     Returns:
         Complete image URL/path
     """
@@ -84,20 +85,22 @@ def get_image_url(article_id: str, online: bool, path: Optional[str] = None) -> 
     return f"{url}{folder}/0{image_name}.jpg"
 
 
-def compute_features_articles(df: pl.DataFrame, online: bool, path: Optional[str] = None) -> pl.DataFrame:
+def compute_features_articles(
+    df: pl.DataFrame, online: bool, path: Optional[str] = None
+) -> pl.DataFrame:
     """
     Computes all article features from raw data.
-    
+
     Args:
         df: Input DataFrame with raw article data
         online: Whether to use online resources
         path: Base path for local resources
-        
+
     Returns:
         DataFrame with computed features
     """
     logger.info("Computing article features...")
-    
+
     df = df.with_columns(
         [
             get_article_id(df).alias("article_id"),
@@ -114,7 +117,7 @@ def compute_features_articles(df: pl.DataFrame, online: bool, path: Optional[str
             lambda x: get_image_url(article_id=x, online=online, path=path)
         )
     )
-    
+
     # Drop null values and unnecessary columns
     df = df.select([col for col in df.columns if not df[col].is_null().any()])
     columns_to_drop = ["detail_desc", "detail_desc_length"]
@@ -125,23 +128,21 @@ def compute_features_articles(df: pl.DataFrame, online: bool, path: Optional[str
 
 
 def generate_embeddings_for_dataframe(
-    df: pl.DataFrame,
-    text_column: str,
-    model: SentenceTransformer,
-    batch_size: int = 32
+    df: pl.DataFrame, text_column: str, model: SentenceTransformer, batch_size: int = 32
 ) -> pl.DataFrame:
     """
     Generates embeddings for text data using a SentenceTransformer model.
-    
+
     Args:
         df: Input DataFrame
         text_column: Column containing text to embed
         model: SentenceTransformer model
         batch_size: Batch size for embedding generation
-        
+
     Returns:
         DataFrame with added embeddings column
     """
+
     @contextlib.contextmanager
     def suppress_stdout():
         new_stdout = io.StringIO()

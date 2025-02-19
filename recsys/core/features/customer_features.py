@@ -1,6 +1,7 @@
 """
 Customer feature generation and processing.
 """
+
 import random
 from enum import Enum
 import polars as pl
@@ -11,7 +12,7 @@ from recsys.config import CustomerDatasetSize
 
 class DatasetSampler:
     """Handles sampling of customer data for different dataset sizes."""
-    
+
     _SIZES: Dict[str, int] = {
         CustomerDatasetSize.LARGE.value: 50_000,
         CustomerDatasetSize.MEDIUM.value: 5_000,
@@ -21,7 +22,7 @@ class DatasetSampler:
     def __init__(self, size: CustomerDatasetSize) -> None:
         """
         Initialize sampler with desired dataset size.
-        
+
         Args:
             size: Enum value indicating desired dataset size
         """
@@ -33,17 +34,15 @@ class DatasetSampler:
         return cls._SIZES
 
     def sample(
-        self,
-        customers_df: pl.DataFrame,
-        transactions_df: pl.DataFrame
+        self, customers_df: pl.DataFrame, transactions_df: pl.DataFrame
     ) -> Dict[str, pl.DataFrame]:
         """
         Sample customers and their transactions.
-        
+
         Args:
             customers_df: DataFrame containing customer data
             transactions_df: DataFrame containing transaction data
-            
+
         Returns:
             Dictionary containing sampled customers and their transactions
         """
@@ -51,29 +50,25 @@ class DatasetSampler:
 
         n_customers = self._SIZES[self._size.value]
         logger.info(f"Sampling {n_customers} customers")
-        
+
         customers_df = customers_df.sample(n=n_customers)
 
         logger.info(f"Original transactions count: {transactions_df.height}")
         transactions_df = transactions_df.join(
-            customers_df.select("customer_id"),
-            on="customer_id"
+            customers_df.select("customer_id"), on="customer_id"
         )
         logger.info(f"Filtered transactions count: {transactions_df.height}")
 
-        return {
-            "customers": customers_df,
-            "transactions": transactions_df
-        }
+        return {"customers": customers_df, "transactions": transactions_df}
 
 
 def fill_missing_club_status(df: pl.DataFrame) -> pl.DataFrame:
     """
     Fill missing club member status values.
-    
+
     Args:
         df: Input DataFrame
-        
+
     Returns:
         DataFrame with filled club_member_status
     """
@@ -83,7 +78,7 @@ def fill_missing_club_status(df: pl.DataFrame) -> pl.DataFrame:
 def create_age_group() -> pl.Expr:
     """
     Create age group categories expression.
-    
+
     Returns:
         Polars expression for age group categorization
     """
@@ -107,35 +102,31 @@ def create_age_group() -> pl.Expr:
 def compute_features_customers(
     df: pl.DataFrame,
     drop_null_age: bool = False,
-    additional_columns: Optional[list] = None
+    additional_columns: Optional[list] = None,
 ) -> pl.DataFrame:
     """
     Compute all customer features from raw data.
-    
+
     Args:
         df: Input DataFrame with raw customer data
         drop_null_age: Whether to drop rows with null age values
         additional_columns: Additional columns to include in output
-        
+
     Returns:
         DataFrame with computed features
     """
     logger.info("Computing customer features...")
-    
+
     # Validate required columns
     required_columns = ["customer_id", "club_member_status", "age", "postal_code"]
     missing_columns = [col for col in required_columns if col not in df.columns]
-    
+
     if missing_columns:
         raise ValueError(f"Missing required columns: {', '.join(missing_columns)}")
 
     # Process features
-    df = (
-        df.pipe(fill_missing_club_status)
-        .with_columns([
-            create_age_group(),
-            pl.col("age").cast(pl.Float64)
-        ])
+    df = df.pipe(fill_missing_club_status).with_columns(
+        [create_age_group(), pl.col("age").cast(pl.Float64)]
     )
 
     # Handle null ages if requested
@@ -143,7 +134,13 @@ def compute_features_customers(
         df = df.drop_nulls(subset=["age"])
 
     # Select output columns
-    output_columns = ["customer_id", "club_member_status", "age", "postal_code", "age_group"]
+    output_columns = [
+        "customer_id",
+        "club_member_status",
+        "age",
+        "postal_code",
+        "age_group",
+    ]
     if additional_columns:
         output_columns.extend(additional_columns)
 

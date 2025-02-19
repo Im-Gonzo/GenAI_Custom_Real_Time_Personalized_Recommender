@@ -23,21 +23,21 @@ def upload_model_to_registry(
 
     model_dir = f"/tmp/{model_name}"
     logger.info(f"Saving model into: {model_dir}")
-    
+
     if os.path.exists(model_dir):
         shutil.rmtree(model_dir)
 
     # Create directory if it doesn't exist
     os.makedirs(model_dir, exist_ok=True)
-    
+
     # Handle different model types
     if isinstance(model, XGBModel):
         # Save XGBoost model in its native format
         model_path = os.path.join(model_dir, "model.bst")
         model.save_model(model_path)
-    elif hasattr(model, 'save'):  # TensorFlow models
+    elif hasattr(model, "save"):  # TensorFlow models
         model.save(model_dir)
-        
+
     else:
         raise ValueError(f"Unsupported model type: {type(model)}")
 

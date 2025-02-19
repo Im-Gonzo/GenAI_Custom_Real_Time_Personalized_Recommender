@@ -1,6 +1,7 @@
 """
 Transaction feature generation and processing.
 """
+
 import numpy as np
 import pandas as pd
 import polars as pl
@@ -40,18 +41,20 @@ def get_day_of_week_feature(df: pl.DataFrame) -> pl.Series:
 def calculate_month_sin_cos(month: pl.Series) -> pl.DataFrame:
     """
     Calculate sine and cosine values for month to capture cyclical patterns.
-    
+
     Args:
         month: Series containing month values
-        
+
     Returns:
         DataFrame with month_sin and month_cos columns
     """
     C = 2 * np.pi / 2
-    return pl.DataFrame({
-        "month_sin": month.apply(lambda x: np.sin(x * C)),
-        "month_cos": month.apply(lambda x: np.cos(x * C)),
-    })
+    return pl.DataFrame(
+        {
+            "month_sin": month.apply(lambda x: np.sin(x * C)),
+            "month_cos": month.apply(lambda x: np.cos(x * C)),
+        }
+    )
 
 
 def convert_t_dat_to_epoch_milliseconds(df: pl.DataFrame) -> pl.Series:
@@ -72,10 +75,10 @@ def month_sin(month: pl.Series) -> np.ndarray:
 def compute_features_transactions(df: pl.DataFrame) -> pl.DataFrame:
     """
     Compute all transaction features from raw data.
-    
+
     Args:
         df: Input DataFrame with raw transaction data
-        
+
     Returns:
         DataFrame with computed features
     """

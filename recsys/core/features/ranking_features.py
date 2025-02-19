@@ -1,6 +1,7 @@
 """
 Ranking feature generation and processing.
 """
+
 import time
 import polars as pl
 from loguru import logger
@@ -12,16 +13,16 @@ from vertexai.resources.preview.feature_store import FeatureView
 def fetch_feature_view_data(
     feature_view: FeatureView,
     select_columns: Optional[List[str]] = None,
-    except_columns: Optional[List[str]] = None
+    except_columns: Optional[List[str]] = None,
 ) -> pl.DataFrame:
     """
     Fetch data from a feature view.
-    
+
     Args:
         feature_view: Feature view to query
         select_columns: Columns to include (if None, all columns except except_columns)
         except_columns: Columns to exclude (only used if select_columns is None)
-        
+
     Returns:
         DataFrame containing feature view data
     """
@@ -47,12 +48,12 @@ def compute_rankings_dataset(
 ) -> pl.DataFrame:
     """
     Compute ranking dataset using GCP feature views.
-    
+
     Args:
         trans_fv: Transactions feature view
         articles_fv: Articles feature view
         customers_fv: Customers feature view
-        
+
     Returns:
         DataFrame containing ranking dataset
     """
@@ -62,20 +63,17 @@ def compute_rankings_dataset(
     # Fetch data from feature views
     logger.info("Fetching transactions data...")
     trans_df = fetch_feature_view_data(
-        trans_fv,
-        select_columns=["article_id", "customer_id"]
+        trans_fv, select_columns=["article_id", "customer_id"]
     )
 
     logger.info("Fetching articles data...")
     articles_df = fetch_feature_view_data(
-        articles_fv,
-        except_columns=["article_description", "embeddings", "image_url"]
+        articles_fv, except_columns=["article_description", "embeddings", "image_url"]
     )
 
     logger.info("Fetching customers data...")
     customers_df = fetch_feature_view_data(
-        customers_fv,
-        select_columns=["customer_id", "age"]
+        customers_fv, select_columns=["customer_id", "age"]
     )
 
     # Type casting
@@ -88,9 +86,7 @@ def compute_rankings_dataset(
 
     # Join with customer data
     df = df.join(
-        customers_df.select(["customer_id", "age"]),
-        on="customer_id",
-        how="left"
+        customers_df.select(["customer_id", "age"]), on="customer_id", how="left"
     )
 
     # Create positive pairs
@@ -113,18 +109,17 @@ def compute_rankings_dataset(
         .get_column("customer_id")
     )
 
-    other_features = (
-        df.select(["age"])
-        .sample(n=n_neg, with_replacement=True, seed=4)
-    )
+    other_features = df.select(["age"]).sample(n=n_neg, with_replacement=True, seed=4)
 
     # Create negative pairs
     logger.info("Creating negative pairs...")
-    negative_pairs = pl.DataFrame({
-        "article_id": article_ids,
-        "customer_id": customer_ids,
-        "age": other_features.get_column("age"),
-    })
+    negative_pairs = pl.DataFrame(
+        {
+            "article_id": article_ids,
+            "customer_id": customer_ids,
+            "age": other_features.get_column("age"),
+        }
+    )
 
     # Add labels
     positive_pairs = positive_pairs.with_columns(pl.lit(1).alias("label"))
@@ -132,10 +127,9 @@ def compute_rankings_dataset(
 
     # Combine positive and negative pairs
     logger.info("Combining positive and negative pairs...")
-    ranking_df = pl.concat([
-        positive_pairs,
-        negative_pairs.select(positive_pairs.columns)
-    ])
+    ranking_df = pl.concat(
+        [positive_pairs, negative_pairs.select(positive_pairs.columns)]
+    )
 
     # Join with item features
     logger.info("Joining with item features...")

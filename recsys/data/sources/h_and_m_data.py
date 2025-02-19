@@ -1,6 +1,7 @@
 """
 H&M dataset loading utilities.
 """
+
 import polars as pl
 from recsys.config import settings
 
@@ -8,7 +9,7 @@ from recsys.config import settings
 def extract_articles_df() -> pl.DataFrame:
     """
     Extract articles data from GCS bucket.
-    
+
     Returns:
         DataFrame containing article information
     """
@@ -21,7 +22,7 @@ def extract_articles_df() -> pl.DataFrame:
 def extract_customers_df() -> pl.DataFrame:
     """
     Extract customers data from GCS bucket.
-    
+
     Returns:
         DataFrame containing customer information
     """
@@ -34,7 +35,7 @@ def extract_customers_df() -> pl.DataFrame:
 def extract_transactions_df() -> pl.DataFrame:
     """
     Extract transactions data from GCS bucket.
-    
+
     Returns:
         DataFrame containing transaction information
     """

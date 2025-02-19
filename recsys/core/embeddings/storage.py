@@ -1,6 +1,7 @@
 """
 Utilities for processing and storing embeddings.
 """
+
 import numpy as np
 import pandas as pd
 import tensorflow as tf
@@ -11,11 +12,11 @@ from loguru import logger
 def process_for_storage(df: pd.DataFrame, embedding_column: str) -> pd.DataFrame:
     """
     Process embeddings into storage-compatible format (e.g., for BigQuery).
-    
+
     Args:
         df: DataFrame containing embeddings
         embedding_column: Name of the embedding column
-        
+
     Returns:
         DataFrame with processed embeddings as float lists
     """
@@ -33,26 +34,30 @@ def process_for_storage(df: pd.DataFrame, embedding_column: str) -> pd.DataFrame
     return df
 
 
-def validate_embeddings(df: pd.DataFrame, embedding_column: str, expected_dim: int) -> bool:
+def validate_embeddings(
+    df: pd.DataFrame, embedding_column: str, expected_dim: int
+) -> bool:
     """
     Validate embedding dimensions and formats.
-    
+
     Args:
         df: DataFrame containing embeddings
         embedding_column: Name of the embedding column
         expected_dim: Expected embedding dimension
-        
+
     Returns:
         bool indicating whether validation passed
     """
     if embedding_column not in df.columns:
         logger.error(f"Embedding column {embedding_column} not found")
         return False
-        
+
     # Check dimensions
     dims = df[embedding_column].apply(len).unique()
     if len(dims) != 1 or dims[0] != expected_dim:
-        logger.error(f"Invalid embedding dimensions. Expected {expected_dim}, got {dims}")
+        logger.error(
+            f"Invalid embedding dimensions. Expected {expected_dim}, got {dims}"
+        )
         return False
-        
+
     return True

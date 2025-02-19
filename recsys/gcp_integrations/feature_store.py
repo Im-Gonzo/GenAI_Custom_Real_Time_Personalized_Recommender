@@ -88,6 +88,6 @@ def create_training_dataset(
         articles_df, on="article_id"
     )
 
- 
+
 def create_ranking_dataset():
     return

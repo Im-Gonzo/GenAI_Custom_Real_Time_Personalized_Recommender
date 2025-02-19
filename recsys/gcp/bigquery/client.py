@@ -1,6 +1,7 @@
 """
 BigQuery client and data management utilities.
 """
+
 from typing import Union, Optional, Dict, List
 import pandas as pd
 import polars as pl
@@ -35,11 +36,11 @@ def get_client() -> bigquery.Client:
 def convert_types(df: pd.DataFrame, schema: List[bigquery.SchemaField]) -> pd.DataFrame:
     """
     Convert DataFrame types to match BigQuery schema.
-    
+
     Args:
         df: Input DataFrame
         schema: BigQuery schema fields
-        
+
     Returns:
         DataFrame with converted types
     """
@@ -71,7 +72,7 @@ def upload_dataframe(
 ) -> None:
     """
     Upload a DataFrame to BigQuery.
-    
+
     Args:
         df: DataFrame to upload
         table_name: Target table name
@@ -94,8 +95,7 @@ def upload_dataframe(
             logger.debug(f"{col}: {dtype}")
 
         job_config = bigquery.LoadJobConfig(
-            write_disposition=write_disposition,
-            schema=schema
+            write_disposition=write_disposition, schema=schema
         )
 
         # Upload data
@@ -123,7 +123,7 @@ def load_features(
 ) -> None:
     """
     Load feature DataFrames to their respective BigQuery tables.
-    
+
     Args:
         customers_df: Customer features DataFrame
         articles_df: Article features DataFrame
@@ -144,10 +144,12 @@ def load_features(
 
         if transactions_df is not None:
             month = pl.from_epoch(transactions_df["t_dat"]).dt.month()
-            transactions_df = transactions_df.with_columns([
-                month_sin(month).alias("month_sin"),
-                month_cos(month).alias("month_cos"),
-            ])
+            transactions_df = transactions_df.with_columns(
+                [
+                    month_sin(month).alias("month_sin"),
+                    month_cos(month).alias("month_cos"),
+                ]
+            )
             upload_dataframe(transactions_df, "recsys_transactions", write_disposition)
 
         if rankings_df is not None:
@@ -163,16 +165,16 @@ def load_features(
 def fetch_feature_view_data(
     feature_view: FeatureView,
     select_columns: Optional[List[str]] = None,
-    except_columns: Optional[List[str]] = None
+    except_columns: Optional[List[str]] = None,
 ) -> pl.DataFrame:
     """
     Fetch data from a feature view by querying its BigQuery source.
-    
+
     Args:
         feature_view: Feature view to query
         select_columns: Columns to select
         except_columns: Columns to exclude
-        
+
     Returns:
         DataFrame containing feature view data
     """

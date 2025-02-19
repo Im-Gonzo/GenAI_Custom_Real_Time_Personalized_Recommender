@@ -4,7 +4,7 @@ from . import (
     two_tower_serving,
     feature_store,
     model_registry,
-    bq_utils
+    bq_utils,
 )
 from .feature_store import get_feature_store
 
@@ -15,5 +15,5 @@ __all__ = [
     "two_tower_serving",
     "llm_ranking_serving",
     "model_registry",
-    "bq_utils"
+    "bq_utils",
 ]

@@ -17,7 +17,6 @@ class RankingModelType(Enum):
 
 
 class Settings(BaseSettings):
-    
     env_path: str = str(Path(__file__).parent.parent / ".env")
     model_config = SettingsConfigDict(env_file=env_path, env_file_encoding="utf-8")
 
@@ -103,7 +102,9 @@ class Settings(BaseSettings):
     )
 
     # Hugging Face
-    TOKENIZERS_PARALLELISM: bool = Field(..., description="Enable tokenizers parallelism")
+    TOKENIZERS_PARALLELISM: bool = Field(
+        ..., description="Enable tokenizers parallelism"
+    )
 
 
 settings = Settings()

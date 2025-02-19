@@ -1,6 +1,7 @@
 """
 BigQuery table schema definitions and utilities.
 """
+
 import json
 from pathlib import Path
 from typing import List
@@ -13,10 +14,10 @@ from recsys.gcp.common.constants import TABLE_CONFIGS
 def get_schema_path(schema_file: str) -> Path:
     """
     Get path to schema file in terraform directory.
-    
+
     Args:
         schema_file: Name of the schema file
-        
+
     Returns:
         Path to schema file
     """
@@ -33,13 +34,13 @@ def get_schema_path(schema_file: str) -> Path:
 def get_table_schema(table_name: str) -> List[bigquery.SchemaField]:
     """
     Get schema from Terraform-defined JSON files.
-    
+
     Args:
         table_name: Name of the table to get schema for
-        
+
     Returns:
         List of BigQuery SchemaField objects
-        
+
     Raises:
         ValueError: If table_name is unknown
     """

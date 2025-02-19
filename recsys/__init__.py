@@ -8,10 +8,4 @@ from . import gcp
 from . import utils
 from . import config
 
-__all__ = [
-    'core',
-    'data',
-    'gcp',
-    'utils',
-    'config'
-]
+__all__ = ["core", "data", "gcp", "utils", "config"]

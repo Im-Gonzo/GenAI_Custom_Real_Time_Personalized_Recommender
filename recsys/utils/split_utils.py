@@ -84,7 +84,9 @@ def train_test_split(
         )
 
         # Split based on random values
-        train_df = df_with_random.filter(pl.col("_random") <= split_point).drop("_random")
+        train_df = df_with_random.filter(pl.col("_random") <= split_point).drop(
+            "_random"
+        )
         test_df = df_with_random.filter(pl.col("_random") > split_point).drop("_random")
 
     # Extract features and labels

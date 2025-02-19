@@ -1,6 +1,7 @@
 """
 Training utilities for the two-tower model.
 """
+
 import tensorflow as tf
 from loguru import logger
 from typing import Dict
@@ -15,23 +16,19 @@ class TwoTowerTrainer:
         self._dataset = dataset
         self._model = model
 
-    def train(
-        self, 
-        train_ds: tf.data.Dataset, 
-        val_ds: tf.data.Dataset
-    ) -> Dict:
+    def train(self, train_ds: tf.data.Dataset, val_ds: tf.data.Dataset) -> Dict:
         """
         Train the two-tower model.
-        
+
         Args:
             train_ds: Training dataset
             val_ds: Validation dataset
-            
+
         Returns:
             Training history
         """
         logger.info("Initializing model training...")
-        
+
         # Initialize query tower normalization
         self._initialize_query_model(train_ds)
 
@@ -47,9 +44,7 @@ class TwoTowerTrainer:
         # Train model
         logger.info(f"Starting training for {settings.TWO_TOWER_NUM_EPOCHS} epochs")
         history = self._model.fit(
-            train_ds,
-            validation_data=val_ds,
-            epochs=settings.TWO_TOWER_NUM_EPOCHS
+            train_ds, validation_data=val_ds, epochs=settings.TWO_TOWER_NUM_EPOCHS
         )
 
         logger.info("Training completed")
@@ -58,14 +53,12 @@ class TwoTowerTrainer:
     def _initialize_query_model(self, train_ds: tf.data.Dataset) -> None:
         """
         Initialize the query model's normalization layers.
-        
+
         Args:
             train_ds: Training dataset for normalization statistics
         """
         # Initialize age normalization layer
-        self._model.query_model.normalized_age.adapt(
-            train_ds.map(lambda x: x["age"])
-        )
+        self._model.query_model.normalized_age.adapt(train_ds.map(lambda x: x["age"]))
 
         # Initialize model with sample inputs
         query_df = self._dataset.properties["query_df"]

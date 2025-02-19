@@ -6,8 +6,4 @@ from . import embeddings
 from . import features
 from . import models
 
-__all__ = [
-    'embeddings',
-    'features',
-    'models'
-]
+__all__ = ["embeddings", "features", "models"]

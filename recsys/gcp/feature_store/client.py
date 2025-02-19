@@ -1,6 +1,7 @@
 """
 Feature Store client and management utilities.
 """
+
 from typing import List, Tuple, Optional
 from google.cloud import aiplatform
 from loguru import logger
@@ -12,19 +13,16 @@ from vertexai.resources.preview.feature_store import FeatureOnlineStore, Feature
 
 def initialize() -> None:
     """Initialize Vertex AI with project settings."""
-    aiplatform.init(
-        project=settings.GCP_PROJECT,
-        location=settings.GCP_LOCATION
-    )
+    aiplatform.init(project=settings.GCP_PROJECT, location=settings.GCP_LOCATION)
 
 
 def get_client() -> FeatureOnlineStore:
     """
     Get the Feature Store client.
-    
+
     Returns:
         Feature Store client
-        
+
     Raises:
         RuntimeError: If feature store cannot be accessed
     """
@@ -44,16 +42,15 @@ def get_client() -> FeatureOnlineStore:
 
 
 def get_feature_views(
-    feature_store: FeatureOnlineStore,
-    view_ids: Optional[List[str]] = None
+    feature_store: FeatureOnlineStore, view_ids: Optional[List[str]] = None
 ) -> Tuple[FeatureView]:
     """
     Get feature views from the feature store.
-    
+
     Args:
         feature_store: Feature store client
         view_ids: List of view IDs to retrieve (default: standard views)
-        
+
     Returns:
         List of feature views
     """

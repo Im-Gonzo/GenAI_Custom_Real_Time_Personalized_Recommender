@@ -6,12 +6,9 @@ This package provides data handling functionality including:
 - Preprocessing and feature engineering
 - Data validation and quality assurance
 """
+
 from . import sources
 from . import preprocessing
 from . import validation
 
-__all__ = [
-    'sources',
-    'preprocessing',
-    'validation'
-]
+__all__ = ["sources", "preprocessing", "validation"]
