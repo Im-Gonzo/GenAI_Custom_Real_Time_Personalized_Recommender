@@ -14,6 +14,8 @@ from recsys.gcp.bigquery.schemas import get_table_schema
 from recsys.core.features.transaction_features import month_cos, month_sin
 from recsys.core.embeddings import process_for_storage
 
+from vertexai.resources.preview.feature_store import FeatureView
+
 
 # BigQuery to Pandas type mapping
 BQ_TO_PANDAS_TYPES = {
@@ -159,7 +161,7 @@ def load_features(
 
 
 def fetch_feature_view_data(
-    feature_view: aiplatform.featurestore.EntityType.Feature,
+    feature_view: FeatureView,
     select_columns: Optional[List[str]] = None,
     except_columns: Optional[List[str]] = None
 ) -> pl.DataFrame:

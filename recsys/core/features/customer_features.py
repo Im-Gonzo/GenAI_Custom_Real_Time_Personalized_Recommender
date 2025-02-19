@@ -6,16 +6,10 @@ from enum import Enum
 import polars as pl
 from loguru import logger
 from typing import Dict, Optional
+from recsys.config import CustomerDatasetSize
 
 
-class CustomerDatasetSize(Enum):
-    """Enumeration of supported dataset sizes for sampling."""
-    LARGE = "large"
-    MEDIUM = "medium"
-    SMALL = "small"
-
-
-class CustomerSampler:
+class DatasetSampler:
     """Handles sampling of customer data for different dataset sizes."""
     
     _SIZES: Dict[str, int] = {
@@ -110,7 +104,7 @@ def create_age_group() -> pl.Expr:
     ).alias("age_group")
 
 
-def compute_features(
+def compute_features_customers(
     df: pl.DataFrame,
     drop_null_age: bool = False,
     additional_columns: Optional[list] = None
