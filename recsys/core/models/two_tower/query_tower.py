@@ -6,32 +6,37 @@ The query tower processes user features to create user embeddings.
 from typing import List
 
 import tensorflow as tf
+from recsys.config import settings
 from tensorflow.keras.layers import Normalization, StringLookup
 
 
 class QueryTowerFactory:
     """Factory for creating QueryTower instances with configured parameters."""
 
-    def __init__(self, user_ids: List[str]) -> None:
+    def __init__(self, dataset: "TwoTowerDataset") -> None:
         """
         Initialize the factory with user configuration.
 
         Args:
             user_ids: List of unique user IDs for embedding layer initialization
         """
-        self._user_ids = user_ids
+        self._dataset = dataset
 
-    def build(self, embedding_dim: int) -> "QueryTower":
+    def build(
+        self, embed_dim: int = settings.TWO_TOWER_MODEL_EMBEDDING_SIZE
+    ) -> "QueryTower":
         """
         Build a new QueryTower instance.
 
         Args:
-            embedding_dim: Dimension of the embedding space
+            emb_dim: Dimension of the embedding space
 
         Returns:
             Configured QueryTower model
         """
-        return QueryTower(user_ids=self._user_ids, embedding_dim=embedding_dim)
+        return QueryTower(
+            user_ids=self._dataset.properties["user_ids"], emb_dim=embed_dim
+        )
 
 
 class QueryTower(tf.keras.Model):
@@ -42,13 +47,13 @@ class QueryTower(tf.keras.Model):
     projects them into a shared embedding space with items.
     """
 
-    def __init__(self, user_ids: List[str], embedding_dim: int) -> None:
+    def __init__(self, user_ids: List[str], emb_dim: int) -> None:
         """
         Initialize the query tower.
 
         Args:
             user_ids: List of unique user IDs for embedding layer initialization
-            embedding_dim: Dimension of the embedding space
+            emb_dim: Dimension of the embedding space
         """
         super().__init__()
 
@@ -58,8 +63,8 @@ class QueryTower(tf.keras.Model):
                 StringLookup(vocabulary=user_ids, mask_token=None),
                 tf.keras.layers.Embedding(
                     # Add 1 for unknown tokens
-                    input_dim=len(user_ids) + 1,
-                    output_dim=embedding_dim,
+                    len(user_ids) + 1,
+                    emb_dim,
                 ),
             ]
         )
@@ -70,8 +75,8 @@ class QueryTower(tf.keras.Model):
         # Final feed-forward network
         self.projection_layers = tf.keras.Sequential(
             [
-                tf.keras.layers.Dense(embedding_dim, activation="relu"),
-                tf.keras.layers.Dense(embedding_dim),
+                tf.keras.layers.Dense(emb_dim, activation="relu"),
+                tf.keras.layers.Dense(emb_dim),
             ]
         )
 

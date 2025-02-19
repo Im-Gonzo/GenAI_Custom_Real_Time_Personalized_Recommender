@@ -5,22 +5,21 @@ Item tower implementation for the two-tower recommendation model.
 from typing import List
 import tensorflow as tf
 from tensorflow.keras.layers import StringLookup
+from recsys.config import settings
 
 
 class ItemTowerFactory:
-    def __init__(
-        self, item_ids: List[str], garment_groups: List[str], index_groups: List[str]
-    ) -> None:
-        self._item_ids = item_ids
-        self._garment_groups = garment_groups
-        self._index_groups = index_groups
+    def __init__(self, dataset: "TwoTowerDataset") -> None:
+        self._dataset = dataset
 
-    def build(self, embedding_dim: int) -> "ItemTower":
+    def build(
+        self, embed_dim: int = settings.TWO_TOWER_MODEL_EMBEDDING_SIZE
+    ) -> "ItemTower":
         return ItemTower(
-            item_ids=self._item_ids,
-            garment_groups=self._garment_groups,
-            index_groups=self._index_groups,
-            embedding_dim=embedding_dim,
+            item_ids=self._dataset.properties["item_ids"],
+            garment_groups=self._dataset.properties["garment_groups"],
+            index_groups=self._dataset.properties["index_groups"],
+            embed_dim=embed_dim,
         )
 
 
@@ -30,7 +29,7 @@ class ItemTower(tf.keras.Model):
         item_ids: List[str],
         garment_groups: List[str],
         index_groups: List[str],
-        embedding_dim: int,
+        embed_dim: int,
     ):
         super().__init__()
 
@@ -41,9 +40,8 @@ class ItemTower(tf.keras.Model):
             [
                 StringLookup(vocabulary=item_ids, mask_token=None),
                 tf.keras.layers.Embedding(
-                    input_dim=len(item_ids)
-                    + 1,  # Additional embedding for unknown tokens
-                    output_dim=embedding_dim,
+                    len(item_ids) + 1,  # Additional embedding for unknown tokens
+                    embed_dim,
                 ),
             ]
         )
@@ -60,8 +58,8 @@ class ItemTower(tf.keras.Model):
 
         self.projection_layers = tf.keras.Sequential(
             [
-                tf.keras.layers.Dense(embedding_dim, activation="relu"),
-                tf.keras.layers.Dense(embedding_dim),
+                tf.keras.layers.Dense(embed_dim, activation="relu"),
+                tf.keras.layers.Dense(embed_dim),
             ]
         )
 

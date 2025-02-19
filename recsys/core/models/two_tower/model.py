@@ -3,25 +3,27 @@ Main two-tower model implementation combining query and item towers.
 """
 
 import tensorflow as tf
+from recsys.config import settings
 import tensorflow_recommenders as tfrs
 from .query_tower import QueryTower
 from .item_tower import ItemTower
 
 
 class TwoTowerFactory:
-    def __init__(self, item_dataset: tf.data.Dataset) -> None:
-        self._item_dataset = item_dataset
+    def __init__(self, dataset: "TwoTowerDataset") -> None:
+        self._dataset = dataset
 
     def build(
         self,
         query_model: QueryTower,
         item_model: ItemTower,
-        batch_size: int,
+        batch_size: int = settings.TWO_TOWER_MODEL_BATCH_SIZE,
     ) -> "TwoTowerModel":
+        item_ds = self._dataset.get_items_subset()
         return TwoTowerModel(
-            query_model=query_model,
-            item_model=item_model,
-            item_dataset=self._item_dataset,
+            query_model,
+            item_model,
+            item_ds=item_ds,
             batch_size=batch_size,
         )
 
@@ -31,7 +33,7 @@ class TwoTowerModel(tf.keras.Model):
         self,
         query_model: QueryTower,
         item_model: ItemTower,
-        item_dataset: tf.data.Dataset,
+        item_ds: tf.data.Dataset,
         batch_size: int,
     ) -> None:
         super().__init__()
@@ -41,7 +43,7 @@ class TwoTowerModel(tf.keras.Model):
 
         self.task = tfrs.tasks.Retrieval(
             metrics=tfrs.metrics.FactorizedTopK(
-                candidates=item_dataset.batch(batch_size).map(self.item_model)
+                candidates=item_ds.batch(batch_size).map(self.item_model)
             )
         )
 
