@@ -8,7 +8,7 @@ from loguru import logger
 from typing import Dict, List, Tuple
 
 from recsys.config import settings
-from recsys.utils.split_utils import train_validation_test_split
+from recsys.data.preprocessing.splitting import train_validation_test_split
 
 
 class TwoTowerDataset:

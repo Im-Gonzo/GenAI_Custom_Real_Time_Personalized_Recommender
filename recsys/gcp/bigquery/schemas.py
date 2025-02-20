@@ -58,10 +58,9 @@ def get_table_schema(table_name: str) -> List[bigquery.SchemaField]:
                     schema_fields.append(
                         bigquery.SchemaField(
                             name=field["name"],
-                            field_type="ARRAY",
+                            field_type="FLOAT64",
                             mode=field["mode"],
                             description=field.get("description"),
-                            field_type_params={"item_type": "FLOAT64"},
                         )
                     )
                 else:

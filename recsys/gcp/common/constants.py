@@ -24,5 +24,8 @@ TABLE_CONFIGS = {
         "schema_file": "rankings_schema.json",
         "embedding_columns": [],  # No embeddings
     },
-    "recsys_candidates": {},
+    "recsys_candidates": {
+        "schema_file": "candidates_schema.json",
+        "embedding_columns": ['embeddings']
+    },
 }

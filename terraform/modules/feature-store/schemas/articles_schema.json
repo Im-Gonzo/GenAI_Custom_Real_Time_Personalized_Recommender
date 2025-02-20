@@ -82,5 +82,11 @@
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "URL to the article image"
+  },
+  {
+    "name": "embeddings",
+    "type": "FLOAT64",
+    "mode": "REPEATED",
+    "description": "Array of unique identifiers encoded"
   }
 ]

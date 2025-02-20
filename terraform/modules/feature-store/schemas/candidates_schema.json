@@ -1,1 +1,14 @@
-[{}]
+[
+    {
+        "name": "article_id",
+        "type": "STRING",
+        "mode": "REQUIRED",
+        "description": "Unique identifier for the article"
+    },
+    {
+        "name": "embeddings",
+        "type": "FLOAT64",
+        "mode": "REPEATED",
+        "description": "Array of unique identifiers encoded"
+    }
+]

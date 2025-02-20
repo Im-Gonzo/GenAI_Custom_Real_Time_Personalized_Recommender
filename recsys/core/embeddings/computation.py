@@ -2,12 +2,13 @@
 Core functionality for computing embeddings.
 """
 
+import polars as pl
 import pandas as pd
 import tensorflow as tf
 from typing import Any
 
 
-def compute_embeddings(df: pd.DataFrame, model: Any) -> pd.DataFrame:
+def compute_embeddings(df: pl.DataFrame, model: Any) -> pl.DataFrame:
     """
     Compute embeddings for items using the provided model.
 
@@ -18,7 +19,9 @@ def compute_embeddings(df: pd.DataFrame, model: Any) -> pd.DataFrame:
     Returns:
         DataFrame with article IDs and their corresponding embeddings
     """
-    ds = tf.data.Dataset.from_tensor_slices({col: df[col] for col in df})
+    pandas_df = df.to_pandas()
+
+    ds = tf.data.Dataset.from_tensor_slices({col: pandas_df[col] for col in pandas_df.columns})
 
     candidate_embeddings = ds.batch(2048).map(lambda x: (x["article_id"], model(x)))
 
@@ -28,7 +31,7 @@ def compute_embeddings(df: pd.DataFrame, model: Any) -> pd.DataFrame:
     all_article_ids = all_article_ids.numpy().astype(int).tolist()
     all_embeddings = all_embeddings.numpy().tolist()
 
-    embeddings_df = pd.DataFrame(
+    embeddings_df = pl.DataFrame(
         {
             "article_id": all_article_ids,
             "embeddings": all_embeddings,

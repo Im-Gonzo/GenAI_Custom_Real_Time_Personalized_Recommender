@@ -122,16 +122,20 @@ def list_models(
     return aiplatform.Model.list(filter=filter_expression, order_by=order_by)
 
 
-def get_model(model_name: str, model_version: str = "latest") -> aiplatform.Model:
+def get_model(model_name: str, model_version: str = "latest") -> Union[tuple[tf.keras.Model, list], aiplatform.Model]:
     """
-    Get a specific model from Vertex AI.
+    Get a specific model from Vertex AI, optionally downloading and extracting features.
 
     Args:
         model_name: Name of the model
         model_version: Version to retrieve (default: latest)
+        download_model: Whether to download and load the model (default: False)
 
     Returns:
-        Retrieved model
+        If download_model is True:
+            Tuple of (loaded TensorFlow model, list of input features)
+        If download_model is False:
+            Vertex AI model reference
 
     Raises:
         RuntimeError: If model not found
@@ -145,11 +149,31 @@ def get_model(model_name: str, model_version: str = "latest") -> aiplatform.Mode
     if not models:
         raise RuntimeError(f"No model found with name: {model_name}")
 
+    vertex_model = None
     if model_version == "latest":
-        return models[0]
-
-    for model in models:
-        if model.version == model_version:
-            return model
-
-    raise RuntimeError(f"Version {model_version} not found for model: {model_name}")
+        vertex_model = models[0]
+    else:
+        for model in models:
+            if model.version == model_version:
+                vertex_model = model
+                break
+        
+        if vertex_model is None:
+            raise RuntimeError(f"Version {model_version} not found for model: {model_name}")
+   
+    logger.info(f"Downloading '{vertex_model.name}' version {vertex_model.uri}")
+    
+    tf_model = tf.saved_model.load(vertex_model.uri)
+    
+    features = []
+    try:
+        features = [
+            *tf_model.signatures["serving_default"]
+            .structured_input_signature[-1]
+            .keys()
+        ]
+        logger.info(f"Extracted {len(features)} input features from model")
+    except (KeyError, AttributeError, IndexError) as e:
+        logger.warning(f"Could not extract features from model signature: {e}")
+    
+    return tf_model, features

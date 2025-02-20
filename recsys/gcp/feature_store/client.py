@@ -26,6 +26,7 @@ def get_client() -> FeatureOnlineStore:
     Raises:
         RuntimeError: If feature store cannot be accessed
     """
+    initialize()
     try:
         logger.info(
             f"Retrieving Feature Store from "

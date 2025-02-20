@@ -119,6 +119,7 @@ def load_features(
     interactions_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     transactions_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     rankings_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
+    candidates_df: Optional[Union[pd.DataFrame, pl.DataFrame]] = None,
     write_disposition: str = "WRITE_TRUNCATE",
 ) -> None:
     """
@@ -154,6 +155,9 @@ def load_features(
 
         if rankings_df is not None:
             upload_dataframe(rankings_df, "recsys_rankings", write_disposition)
+
+        if candidates_df is not None:
+            upload_dataframe(candidates_df, "recsys_candidates", write_disposition)
 
         logger.info("Successfully loaded all features")
 

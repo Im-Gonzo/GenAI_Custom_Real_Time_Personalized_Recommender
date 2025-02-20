@@ -2,13 +2,13 @@
 Preprocessing utilities for embeddings generation.
 """
 
-import pandas as pd
+import polars as pl
 from typing import List
 
 
 def preprocess_candidates(
-    train_df: pd.DataFrame, candidate_features: List[str]
-) -> pd.DataFrame:
+    train_df: pl.DataFrame, candidate_features: List[str]
+) -> pl.DataFrame:
     """
     Preprocess candidate features for embedding generation.
 
@@ -20,9 +20,9 @@ def preprocess_candidates(
         Preprocessed DataFrame with unique candidates
     """
     # Select candidate features from the training DF
-    item_df = train_df[candidate_features]
+    item_df = train_df.select(candidate_features)
 
     # Drop duplicate rows based on the 'article_id' to get unique candidates
-    item_df.drop_duplicates(subset="article_id", inplace=True)
+    item_df = item_df.unique(subset=["article_id"], keep="first")
 
     return item_df
