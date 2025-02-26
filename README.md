@@ -55,4 +55,3 @@ make deploy-all
 gsutil -m cp -r /path/to/downloaded/data/* gs://gonzo-recsys-data/h-and-m/
 ```
 
-[Rest of the README content remains the same...]
