@@ -74,7 +74,7 @@ def get_image_url(article_id: str, online: bool, path: Optional[str] = None) -> 
         Complete image URL/path
     """
     if online:
-        url = f"gs://{settings.GCS_DATA_BUCKET}/h-and-m/images/0"
+        url = f"https://storage.cloud.google.com/{settings.GCS_DATA_BUCKET}/h-and-m/images/0"
     else:
         url = f"{path}/data/images/0"
 

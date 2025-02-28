@@ -4,7 +4,7 @@ locals {
   interactions_schema = file("${path.module}/schemas/interactions_schema.json")
   transactions_schema = file("${path.module}/schemas/transactions_schema.json")
   rankings_schema     = file("${path.module}/schemas/rankings_schema.json")
-  candidates_schema = file("${path.module}/schemas/candidates_schema.json")
+  candidates_schema   = file("${path.module}/schemas/candidates_schema.json")
 }
 
 ###############
@@ -57,7 +57,7 @@ resource "google_bigquery_table" "recsys_featurestore_transactions" {
   dataset_id          = google_bigquery_dataset.featurestore_dataset.dataset_id
   table_id            = "recsys_transactions"
   schema              = local.transactions_schema
-  clustering          = ["customer_id", "article_id"]
+  clustering          = ["customer_id"]
 
   depends_on = [google_bigquery_dataset.featurestore_dataset]
 }
@@ -97,7 +97,7 @@ resource "google_vertex_ai_feature_online_store" "featurestore" {
   bigtable {
     auto_scaling {
       min_node_count         = 1
-      max_node_count         = 3
+      max_node_count         = 2
       cpu_utilization_target = 50
     }
   }
@@ -171,7 +171,7 @@ resource "google_vertex_ai_feature_online_store_featureview" "transactions" {
 
   big_query_source {
     uri               = "bq://${var.project_id}.${google_bigquery_dataset.featurestore_dataset.dataset_id}.${google_bigquery_table.recsys_featurestore_transactions.table_id}"
-    entity_id_columns = ["customer_id", "article_id"]
+    entity_id_columns = ["customer_id"]
   }
 }
 

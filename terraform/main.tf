@@ -32,9 +32,8 @@ module "feature_store" {
 module "vertex_ai" {
   source = "./modules/vertex-ai"
 
-  project_id                = var.project_id
-  region                    = var.region
-  model_registry_repository = var.model_registry_repository
+  project_id = var.project_id
+  region     = var.region
 }
 
 # Storage Module
@@ -53,3 +52,13 @@ module "iam" {
   project_id                    = var.project_id
   feature_store_service_account = var.feature_store_service_account
 }
+
+# Artifact Registry
+module "artifact_registry" {
+  source = "./modules/artifact-registry"
+
+  project_id                      = var.project_id
+  region                          = var.region
+  artifact_registry_repository    = var.artifact_registry_repository
+  artifact_registry_ranking_image = var.artifact_registry_ranking_image
+} 

@@ -19,7 +19,7 @@ def train_test_split(
     time_column: str = "t_dat",
     stratify_column: Optional[str] = None,
     extra_filter: Optional[pl.Expr] = None,
-    seed: int = 42,
+    seed: int = 12,
 ) -> Tuple[pl.DataFrame, pl.DataFrame, Optional[pl.DataFrame], Optional[pl.DataFrame]]:
     """
     Split data into train and test sets using either random or time-based splitting.
@@ -81,10 +81,8 @@ def train_test_split(
         )
 
     else:
-        # Random split
         if test_size is None:
             raise ValueError("test_size must be provided for random splitting")
-
         if not 0 < test_size < 1:
             raise ValueError("test_size should be between 0 and 1")
 

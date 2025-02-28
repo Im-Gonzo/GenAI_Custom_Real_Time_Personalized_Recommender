@@ -1,0 +1,91 @@
+{
+    "instances": [
+        {
+            "customer_id": "00b203a32faa3d007dba198ef27c159b0d34085c6bad9572d6646f85c4cad98d",
+            "month_sin": 0.5,
+            "month_cos": 0.866025,
+            "query_emb": [
+                0.214135289,
+                0.571055949,
+                0.330709577,
+                -0.225899458,
+                -0.308674961,
+                -0.0115124583,
+                0.0730511621,
+                -0.495835781,
+                0.625569344,
+                -0.0438038409,
+                0.263472944,
+                -0.58485353,
+                -0.307070434,
+                0.0414443575,
+                -0.321789205,
+                0.966559
+            ]
+        }
+    ]
+},
+{
+    "features": [
+        {
+            "name": "t_dat",
+            "value": {
+                "int64_value": "0"
+            }
+        },
+        {
+            "name": "article_id",
+            "value": {
+                "string_value": "602540001"
+            }
+        },
+        {
+            "name": "price",
+            "value": {
+                "double_value": 0.011847457627118646
+            }
+        },
+        {
+            "name": "sales_channel_id",
+            "value": {
+                "int64_value": "2"
+            }
+        },
+        {
+            "name": "year",
+            "value": {
+                "int64_value": "2018"
+            }
+        },
+        {
+            "name": "month",
+            "value": {
+                "int64_value": "10"
+            }
+        },
+        {
+            "name": "day",
+            "value": {
+                "int64_value": "27"
+            }
+        },
+        {
+            "name": "day_of_week",
+            "value": {
+                "int64_value": "6"
+            }
+        },
+        {
+            "name": "month_sin",
+            "value": {
+                "double_value": 0.49999999999999994
+            }
+        },
+        {
+            "name": "month_cos",
+            "value": {
+                "double_value": 0.8660254037844387
+            }
+        }
+    ]
+}

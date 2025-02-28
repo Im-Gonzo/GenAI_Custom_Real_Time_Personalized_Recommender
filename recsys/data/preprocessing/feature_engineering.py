@@ -50,17 +50,3 @@ def create_time_features(df: pl.DataFrame, date_column: str = "t_dat") -> pl.Dat
     )
 
     return result
-
-
-def compute_interaction_features(df: pl.DataFrame) -> pl.DataFrame:
-    """
-    Compute interaction-based features.
-
-    Args:
-        df: Input DataFrame with user-item interactions
-
-    Returns:
-        DataFrame with additional interaction features
-    """
-    # Example implementation - adapt to your specific needs
-    return df

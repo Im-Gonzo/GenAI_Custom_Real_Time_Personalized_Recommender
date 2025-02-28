@@ -21,7 +21,9 @@ def compute_embeddings(df: pl.DataFrame, model: Any) -> pl.DataFrame:
     """
     pandas_df = df.to_pandas()
 
-    ds = tf.data.Dataset.from_tensor_slices({col: pandas_df[col] for col in pandas_df.columns})
+    ds = tf.data.Dataset.from_tensor_slices(
+        {col: pandas_df[col] for col in pandas_df.columns}
+    )
 
     candidate_embeddings = ds.batch(2048).map(lambda x: (x["article_id"], model(x)))
 

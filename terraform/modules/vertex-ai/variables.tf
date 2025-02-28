@@ -14,11 +14,6 @@ variable "endpoint_id" {
   default     = "recsys"
 }
 
-variable "model_registry_repository" {
-  description = "Full path to the Model Registry repository"
-  type        = string
-}
-
 variable "enable_monitoring" {
   description = "Whether to enable model monitoring"
   type        = bool

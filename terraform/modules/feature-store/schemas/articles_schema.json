@@ -6,16 +6,22 @@
     "description": "Unique identifier for the article"
   },
   {
+    "name": "product_code",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Product code identifier"
+  },
+  {
     "name": "prod_name",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "Name of the product"
   },
   {
-    "name": "prod_name_length",
+    "name": "product_type_no",
     "type": "INTEGER",
     "mode": "REQUIRED",
-    "description": "Length of the product name"
+    "description": "Product type number"
   },
   {
     "name": "product_type_name",
@@ -30,10 +36,34 @@
     "description": "Product group name"
   },
   {
+    "name": "graphical_appearance_no",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Graphical appearance number"
+  },
+  {
     "name": "graphical_appearance_name",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "Graphical appearance description"
+  },
+  {
+    "name": "colour_group_code",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Color group code"
+  },
+  {
+    "name": "colour_group_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Color group name"
+  },
+  {
+    "name": "perceived_colour_value_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Perceived color value identifier"
   },
   {
     "name": "perceived_colour_value_name",
@@ -42,16 +72,46 @@
     "description": "Perceived color value"
   },
   {
+    "name": "perceived_colour_master_id",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Perceived master color identifier"
+  },
+  {
     "name": "perceived_colour_master_name",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "Master color name"
   },
   {
-    "name": "colour_group_code",
+    "name": "department_no",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Department number"
+  },
+  {
+    "name": "department_name",
     "type": "STRING",
     "mode": "REQUIRED",
-    "description": "Color group code"
+    "description": "Department name"
+  },
+  {
+    "name": "index_code",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Index code"
+  },
+  {
+    "name": "index_name",
+    "type": "STRING",
+    "mode": "REQUIRED",
+    "description": "Index name"
+  },
+  {
+    "name": "index_group_no",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Index group number"
   },
   {
     "name": "index_group_name",
@@ -60,16 +120,34 @@
     "description": "Index group name"
   },
   {
+    "name": "section_no",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Section number"
+  },
+  {
     "name": "section_name",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "Section name"
   },
   {
+    "name": "garment_group_no",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Garment group number"
+  },
+  {
     "name": "garment_group_name",
     "type": "STRING",
     "mode": "REQUIRED",
     "description": "Garment group name"
+  },
+  {
+    "name": "prod_name_length",
+    "type": "INTEGER",
+    "mode": "REQUIRED",
+    "description": "Length of the product name"
   },
   {
     "name": "article_description",

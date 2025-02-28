@@ -94,7 +94,7 @@ def compute_rankings_dataset(
 
     # Generate negative samples
     logger.info("Generating negative samples...")
-    n_neg = len(positive_pairs) * 10
+    n_neg = len(positive_pairs) * 1
 
     article_ids = (
         df.select("article_id")

@@ -26,6 +26,6 @@ TABLE_CONFIGS = {
     },
     "recsys_candidates": {
         "schema_file": "candidates_schema.json",
-        "embedding_columns": ['embeddings']
+        "embedding_columns": ["embeddings"],
     },
 }

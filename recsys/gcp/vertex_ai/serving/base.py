@@ -54,8 +54,6 @@ class BaseGCPModel(ABC):
         Raises:
             ValueError: If model not saved locally first
         """
-        if not self.local_model_path:
-            raise ValueError("Model must be saved locally first using save_to_local()")
 
         initialize_vertex_ai()
 

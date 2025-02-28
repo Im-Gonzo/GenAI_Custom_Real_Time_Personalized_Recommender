@@ -54,8 +54,18 @@ variable "feature_store_service_account" {
   default     = "feature-store-sa"
 }
 
-variable "model_registry_repository" {
-  description = "The ID of the Model Registry"
+#####################
+# Artifact Registry #
+#####################
+
+variable "artifact_registry_repository" {
+  description = "The ID of the Artifact Registry"
   type        = string
-  default     = "recsys-model-registry"
+  default     = "recsys-artifact-registry"
+}
+
+variable "artifact_registry_ranking_image" {
+  description = "The Artifact Image URI"
+  type        = string
+  default     = "recsys-ranking-predictor:latest"
 }
