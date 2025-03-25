@@ -33,7 +33,6 @@ class Settings(BaseSettings):
 
     # GCP Resource Names
     GCP_ARTIFACT_REGISTRY: str = Field(..., description="Artifact Registry name")
-    GCP_MODEL_REGISTRY: str = Field(..., description="Model Registry name")
 
     # Storage Configuration
     GCS_DATA_BUCKET: str = Field(..., description="GCS bucket for data storage")
@@ -49,6 +48,10 @@ class Settings(BaseSettings):
         default=CustomerDatasetSize.SMALL, description="Size of customer dataset to use"
     )
     
+    FEATURES_EMBEDDING_MODEL_ID: str = Field(
+        ..., description="Model ID for feature embeddings"
+    )
+
     # Model Training - Two Tower Neural Network
     TWO_TOWER_MODEL_EMBEDDING_SIZE: int = Field(
         default=16, description="Embedding size for two-tower model"
