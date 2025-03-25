@@ -26,12 +26,10 @@ This project implements a modern recommendation system with:
 │   └── ...                 # Terraform configuration files
 ├── notebooks/              # Jupyter notebooks for model development
 │   ├── 1_feature_computing.ipynb            # Feature computation
-│   ├── 2_tp_training_retrieval_model.ipynb  # Two-tower retrieval model
+│   ├── 2_tp_training_retrieval_model.ipynb  # Two-tower retrieval 
 │   ├── 3_tp_training_ranking_model.ipynb    # Ranking model training
-│   ├── 4_ip_computing_item_embeddings.ipynb # Item embedding computation
+│   ├── 4_ip_computing_item_embeddings.ipynb # Item embedding 
 │   ├── 5_ip_creating_deployments.ipynb      # Production deployment
-│   ├── item_model/         # Item tower model notebooks
-│   └── query_model/        # Query tower model notebooks
 ├── data/                   # Data directory (not in repository)
 │   └── images/             # Product images (30GB, excluded from git)
 ├── src/                    # Additional source code
@@ -54,7 +52,7 @@ This project uses the H&M Personalized Fashion Recommendations dataset:
 2. **Upload to GCS**
    - After infrastructure deployment, manually upload the dataset files to:
      ```
-     gs://gonzo-recsys-data/h-and-m/
+     gs://my-gcs-bucket/h-and-m/
      ```
    - Required files:
      - articles.csv
@@ -68,7 +66,6 @@ This project uses the H&M Personalized Fashion Recommendations dataset:
 - Poetry (Python package manager)
 - Terraform 1.0+
 - Google Cloud SDK
-- Make
 - Kaggle account (for dataset access)
 
 ## Quick Start 🚀
@@ -81,7 +78,7 @@ make setup
 make deploy-all
 
 # Upload dataset to GCS
-gsutil -m cp -r /path/to/downloaded/data/* gs://gonzo-recsys-data/h-and-m/
+gsutil -m cp -r /path/to/downloaded/data/* gs://my-gcs-bucket/h-and-m/
 ```
 
 ## Development Workflow 🔧
@@ -119,8 +116,6 @@ gsutil -m cp -r /path/to/downloaded/data/* gs://gonzo-recsys-data/h-and-m/
    # Run linters
    make lint
    
-   # Run tests
-   make test
    ```
 
 ## Recommender System Pipeline 🔄
@@ -167,11 +162,12 @@ If you encounter issues:
 | `make deploy-all` | Deploy all resources |
 | `make format` | Format code |
 | `make lint` | Run linters |
-| `make test` | Run tests |
 | `make tf-init` | Initialize Terraform |
 | `make tf-plan` | Plan Terraform changes |
 | `make tf-apply` | Apply Terraform changes |
 | `make tf-destroy` | Destroy Terraform resources |
 | `make clean` | Clean up local files |
+| `make fix-env` | Fix environment issues |
+| `make dev-setup` | Setup development environment |
 
 For more detailed setup instructions, see [LOCAL_SETUP.md](LOCAL_SETUP.md).
