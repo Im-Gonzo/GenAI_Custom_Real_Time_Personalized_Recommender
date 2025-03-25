@@ -7,6 +7,12 @@ locals {
   candidates_schema   = file("${path.module}/schemas/candidates_schema.json")
 }
 
+resource "google_project_service" "vertex_ai" {
+  project                    = var.project_id
+  service                    = "aiplatform.googleapis.com"
+  disable_dependent_services = true
+}
+
 ###############
 ## BigQuery ##
 ##############
@@ -101,6 +107,8 @@ resource "google_vertex_ai_feature_online_store" "featurestore" {
       cpu_utilization_target = 50
     }
   }
+
+  depends_on = [ google_project_service.vertex_ai ]
 }
 
 

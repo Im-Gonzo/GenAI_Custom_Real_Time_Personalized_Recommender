@@ -1,12 +1,12 @@
-output "query_model_endpoint_id" {
-  description = "ID of the query model endpoint"
-  value       = google_vertex_ai_endpoint.query_model_endpoint.name
-}
+# output "query_model_endpoint_id" {
+#   description = "ID of the query model endpoint"
+#   value       = google_vertex_ai_endpoint.query_model_endpoint.name
+# }
 
-output "candidate_model_endpoint_id" {
-  description = "ID of the candidate model endpoint"
-  value       = google_vertex_ai_endpoint.candidate_model_endpoint.name
-}
+# output "candidate_model_endpoint_id" {
+#   description = "ID of the candidate model endpoint"
+#   value       = google_vertex_ai_endpoint.candidate_model_endpoint.name
+# }
 
 output "rankings_model_endpoint_id" {
   description = "ID of the candidate model endpoint"
