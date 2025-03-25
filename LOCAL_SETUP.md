@@ -99,41 +99,6 @@
    EOL
    ```
 
-3. **Create Makefile for Common Operations**
-   ```bash
-   # Create Makefile for terraform operations
-   cat > Makefile << EOL
-   .PHONY: init plan apply destroy format
-
-   # Load environment variables
-   include .env
-   export
-
-   init:
-       cd terraform && terraform init
-
-   format:
-       cd terraform && terraform fmt -recursive
-
-   validate:
-       cd terraform && terraform validate
-
-   plan:
-       cd terraform && terraform plan
-
-   apply:
-       cd terraform && terraform apply
-
-   destroy:
-       cd terraform && terraform destroy
-
-   clean:
-       rm -rf terraform/.terraform
-       rm -f terraform/.terraform.lock.hcl
-       rm -f terraform/terraform.tfstate*
-   EOL
-   ```
-
 ## Usage Instructions
 
 1. **Initial Setup**
