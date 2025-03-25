@@ -24,12 +24,11 @@ PROJECT_ID ?= recsys-dev-gonzo-1
 REGION ?= us-central1
 ZONE ?= us-central1-a
 
-VERTEX_FEATURE_STORE_ID ?= recsys-dev-feature-store
+VERTEX_FEATURE_STORE_ID ?= recsys_dev_feature_store
 VERTEX_FEATURE_STORE_INSTANCE_ID ?= recsys-dev-instance-store
-BIGQUERY_DATASET_ID ?= recsys-dev-retail-dataset
+BIGQUERY_DATASET_ID ?= recsys_dev_retail_dataset
 
 GCP_ARTIFACT_REGISTRY ?= recsys-dev-artifact-registry
-GCP_MODEL_REGISTRY ?= recsys-dev-model-registry
 
 GCS_DATA_BUCKET ?= recsys-dev-data
 
@@ -44,7 +43,7 @@ help: ## Show this help message
 	@echo '${BLUE}Targets:${NC}'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  ${GREEN}%-15s${NC} %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-setup: setup-gcp setup-local ## Complete setup process
+setup: setup-gcp setup-local setup-tf## Complete setup process
 
 setup-gcp: ## Set up GCP project and enable APIs
 	@echo "${BLUE}Setting up GCP project...${NC}"
@@ -76,6 +75,17 @@ setup-local: ## Set up local environment
 	@sed -i '' 's/GCP_MODEL_REGISTRY=.*/GCP_MODEL_REGISTRY=$(GCP_MODEL_REGISTRY)/g' .env
 	@sed -i '' 's/GCS_DATA_BUCKET=.*/GCS_DATA_BUCKET=$(GCS_DATA_BUCKET)/g' .env
 	@sed -i '' 's/GEMINI_AGENT_ID=.*/GEMINI_AGENT_ID=$(GEMINI_AGENT_ID)/g' .env
+	@echo "${GREEN}.env updated successfully${NC}"
+
+setup-tf: ## Set up variables.tf
+	@echo "${BLUE} Setting up terraform variables file ${BLUE}"
+	@sed -i '' 's|default[ ]*=[ ]*".*" # PROJECT_ID|default     = "$(PROJECT_ID)" # PROJECT_ID|g' terraform/variables.tf
+	@sed -i '' 's|default[ ]*=[ ]*".*" # REGION|default     = "$(REGION)" # REGION|g' terraform/variables.tf
+	@sed -i '' 's|default[ ]*=[ ]*".*" # VERTEX_FEATURE_STORE_ID|default     = "$(VERTEX_FEATURE_STORE_ID)" # VERTEX_FEATURE_STORE_ID|g' terraform/variables.tf
+	@sed -i '' 's|default[ ]*=[ ]*".*" # BIGQUERY_DATASET_ID|default     = "$(BIGQUERY_DATASET_ID)" # BIGQUERY_DATASET_ID|g' terraform/variables.tf
+	@sed -i '' 's|default[ ]*=[ ]*".*" # GCP_ARTIFACT_REGISTRY|default     = "$(GCP_ARTIFACT_REGISTRY)" # GCP_ARTIFACT_REGISTRY|g' terraform/variables.tf
+	@sed -i '' 's|name[ ]*=[ ]*".*" # GCS_DATA_BUCKET|name          = "$(GCS_DATA_BUCKET)" # GCS_DATA_BUCKET|g' terraform/variables.tf
+	@echo "${GREEN}terraform/variables.tf updated successfully${NC}"
 
 tf-init: ## Initialize Terraform
 	@echo "${BLUE}Initializing Terraform...${NC}"
