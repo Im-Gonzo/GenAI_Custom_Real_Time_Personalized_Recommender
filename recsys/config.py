@@ -34,16 +34,12 @@ class Settings(BaseSettings):
     # GCP Resource Names
     GCP_ARTIFACT_REGISTRY: str = Field(..., description="Artifact Registry name")
     GCP_MODEL_REGISTRY: str = Field(..., description="Model Registry name")
-    GCP_ENDPOINT_ID: str = Field(..., description="Model endpoint ID")
 
     # Storage Configuration
     GCS_DATA_BUCKET: str = Field(..., description="GCS bucket for data storage")
-    GCS_MODEL_BUCKET: str = Field(..., description="GCS bucket for model storage")
-    GCS_ARTIFACT_BUCKET: str = Field(..., description="GCS bucket for artifacts")
 
     # GCP Agent Configuration
     GEMINI_AGENT_ID: str = Field(..., description="Gemini Agent ID")
-    GEMINI_AGENT_API_KEY: SecretStr = Field(..., description="Gemini Agent API Key")
 
     # BigQuery Configuration
     BIGQUERY_DATASET_ID: str = Field(..., description="The Dataset ID")
@@ -52,10 +48,7 @@ class Settings(BaseSettings):
     CUSTOMER_DATA_SIZE: CustomerDatasetSize = Field(
         default=CustomerDatasetSize.SMALL, description="Size of customer dataset to use"
     )
-    FEATURES_EMBEDDING_MODEL_ID: str = Field(
-        ..., description="Model ID for feature embeddings"
-    )
-
+    
     # Model Training - Two Tower Neural Network
     TWO_TOWER_MODEL_EMBEDDING_SIZE: int = Field(
         default=16, description="Embedding size for two-tower model"

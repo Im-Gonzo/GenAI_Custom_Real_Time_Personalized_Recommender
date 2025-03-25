@@ -1,19 +1,39 @@
-# Colors for better output
+#############################
+#	MAKEFILE CONFIGURATION	#
+#############################
 BLUE := \033[1;34m
 GREEN := \033[1;32m
 RED := \033[1;31m
 YELLOW := \033[1;33m
 NC := \033[0m # No Color
 
+#############################
+#	TOOLS CONFIGURATION		#
+#############################
+
 # Configuration
 PYTHON := python3
 TERRAFORM := terraform
 GCLOUD := gcloud
 
-# Project configuration
-PROJECT_ID ?= recsys-dev-gonzo
+#############################
+#	INFRA CONFIGURATION		#
+#############################
+
+PROJECT_ID ?= recsys-dev-gonzo-1
 REGION ?= us-central1
 ZONE ?= us-central1-a
+
+VERTEX_FEATURE_STORE_ID ?= recsys-dev-feature-store
+VERTEX_FEATURE_STORE_INSTANCE_ID ?= recsys-dev-instance-store
+BIGQUERY_DATASET_ID ?= recsys-dev-retail-dataset
+
+GCP_ARTIFACT_REGISTRY ?= recsys-dev-artifact-registry
+GCP_MODEL_REGISTRY ?= recsys-dev-model-registry
+
+GCS_DATA_BUCKET ?= recsys-dev-data
+
+GEMINI_AGENT_ID ?= recsys-dev-recommender-agent
 
 .PHONY: help setup install-tools verify-tools setup-gcp setup-local tf-init tf-plan tf-apply tf-destroy format lint test
 
@@ -43,10 +63,19 @@ setup-gcp: ## Set up GCP project and enable APIs
 setup-local: ## Set up local environment
 	@echo "${BLUE}Setting up local environment...${NC}"
 	@cp .env.example .env
-	@echo "GOOGLE_APPLICATION_CREDENTIALS=$(PWD)/terraform-sa-key.json" >> .env
-	@echo "PROJECT_ID=$(PROJECT_ID)" >> .env
-	@echo "REGION=$(REGION)" >> .env
-	@echo "ZONE=$(ZONE)" >> .env
+	@sed -i '' 's/GCP_PROJECT=.*/GCP_PROJECT=$(PROJECT_ID)/g' .env
+	@sed -i '' 's/GCP_LOCATION=.*/GCP_LOCATION=$(REGION)/g' .env
+	@sed -i '' 's|GCP_CREDENTIALS=.*|GCP_CREDENTIALS=$(PWD)/terraform-sa-key.json|g' .env
+	@sed -i '' 's/PROJECT_ID=.*/PROJECT_ID=$(PROJECT_ID)/g' .env
+	@sed -i '' 's/REGION=.*/REGION=$(REGION)/g' .env
+	@sed -i '' 's/ZONE=.*/ZONE=$(ZONE)/g' .env
+	@sed -i '' 's/VERTEX_FEATURE_STORE_ID=.*/VERTEX_FEATURE_STORE_ID=$(VERTEX_FEATURE_STORE_ID)/g' .env
+	@sed -i '' 's/VERTEX_FEATURE_STORE_INSTANCE_ID=.*/VERTEX_FEATURE_STORE_INSTANCE_ID=$(VERTEX_FEATURE_STORE_INSTANCE_ID)/g' .env
+	@sed -i '' 's/BIGQUERY_DATASET_ID=.*/BIGQUERY_DATASET_ID=$(BIGQUERY_DATASET_ID)/g' .env
+	@sed -i '' 's/GCP_ARTIFACT_REGISTRY=.*/GCP_ARTIFACT_REGISTRY=$(GCP_ARTIFACT_REGISTRY)/g' .env
+	@sed -i '' 's/GCP_MODEL_REGISTRY=.*/GCP_MODEL_REGISTRY=$(GCP_MODEL_REGISTRY)/g' .env
+	@sed -i '' 's/GCS_DATA_BUCKET=.*/GCS_DATA_BUCKET=$(GCS_DATA_BUCKET)/g' .env
+	@sed -i '' 's/GEMINI_AGENT_ID=.*/GEMINI_AGENT_ID=$(GEMINI_AGENT_ID)/g' .env
 
 tf-init: ## Initialize Terraform
 	@echo "${BLUE}Initializing Terraform...${NC}"
