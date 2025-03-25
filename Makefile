@@ -24,41 +24,12 @@ help: ## Show this help message
 	@echo '${BLUE}Targets:${NC}'
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "  ${GREEN}%-15s${NC} %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
-setup: install-tools verify-tools setup-gcp setup-local ## Complete setup process
-
-install-tools: ## Install required tools
-	@echo "${BLUE}Installing required tools...${NC}"
-	@if ! command -v brew &> /dev/null; then \
-		/bin/bash -c "$$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"; \
-	fi
-	@if ! command -v terraform &> /dev/null; then \
-		brew tap hashicorp/tap && brew install hashicorp/tap/terraform; \
-	fi
-	@if ! command -v gcloud &> /dev/null; then \
-		brew install --cask google-cloud-sdk; \
-	fi
-	@if ! command -v poetry &> /dev/null; then \
-		curl -sSL https://install.python-poetry.org | python3 -; \
-	fi
-	@poetry install
-
-verify-tools: ## Verify tool installations
-	@echo "${BLUE}Verifying installations...${NC}"
-	@terraform version || (echo "${RED}Terraform not installed${NC}" && exit 1)
-	@gcloud version || (echo "${RED}Google Cloud SDK not installed${NC}" && exit 1)
-	@poetry --version || (echo "${RED}Poetry not installed${NC}" && exit 1)
-	@python3 --version || (echo "${RED}Python not installed${NC}" && exit 1)
+setup: setup-gcp setup-local ## Complete setup process
 
 setup-gcp: ## Set up GCP project and enable APIs
 	@echo "${BLUE}Setting up GCP project...${NC}"
 	@gcloud projects create $(PROJECT_ID) --name="Recommender System" || true
 	@gcloud config set project $(PROJECT_ID)
-	@for api in cloudresourcemanager.googleapis.com aiplatform.googleapis.com \
-               artifactregistry.googleapis.com gemini.googleapis.com \
-               iam.googleapis.com compute.googleapis.com; do \
-		echo "Enabling $$api..."; \
-		gcloud services enable $$api; \
-	done
 	@echo "${GREEN}Creating service account...${NC}"
 	@gcloud iam service-accounts create terraform-sa \
 		--description="Service Account for Terraform" \
@@ -102,10 +73,6 @@ lint: ## Run linting
 	@echo "${BLUE}Running linters...${NC}"
 	@poetry run ruff check .
 	@cd terraform && terraform fmt -check -recursive
-
-test: ## Run tests
-	@echo "${BLUE}Running tests...${NC}"
-	@poetry run pytest
 
 deploy-all: tf-init tf-plan tf-apply ## Deploy all resources
 
