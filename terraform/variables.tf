@@ -1,25 +1,25 @@
 variable "project_id" {
   description = "The ID of the GCP project"
   type        = string
-  default     = "recsys-dev-gonzo-2"
+  default     = "recsys-dev-gonzo-1" # PROJECT_ID
 }
 
 variable "region" {
   description = "The region for GCP resources"
   type        = string
-  default     = "us-central1"
+  default     = "us-central1" # REGION
 }
 
 variable "feature_store_id" {
   description = "ID for the Vertex AI Feature Store"
   type        = string
-  default     = "recsys_feature_store_dev"
+  default     = "recsys_dev_feature_store" # VERTEX_FEATURE_STORE_ID
 }
 
 variable "dataset_id" {
   description = "The ID of the BigQuery Dataset"
   type        = string
-  default     = "recsys_dataset"
+  default     = "recsys_dev_retail_dataset" # BIGQUERY_DATASET_ID
 }
 
 variable "storage_buckets" {
@@ -31,7 +31,7 @@ variable "storage_buckets" {
   }))
   default = {
     data = {
-      name          = "gonzo-recsys-data"
+      name          = "recsys-dev-data" # GCS_DATA_BUCKET
       location      = "US"
       storage_class = "STANDARD"
     }
@@ -61,7 +61,7 @@ variable "feature_store_service_account" {
 variable "artifact_registry_repository" {
   description = "The ID of the Artifact Registry"
   type        = string
-  default     = "recsys-artifact-registry"
+  default     = "recsys-dev-artifact-registry" # GCP_ARTIFACT_REGISTRY
 }
 
 variable "artifact_registry_ranking_image" {
