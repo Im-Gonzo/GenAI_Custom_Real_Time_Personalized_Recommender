@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Set environment variables
-PROJECT_ID=${PROJECT_ID:-recsys-dev-gonzo-2}
+PROJECT_ID=${PROJECT_ID:-recsys-dev-gonzo-1}
 REGION=${REGION:-us-central1}
-REPOSITORY=${REPOSITORY:-recsys-artifact-registry} 
+REPOSITORY=${REPOSITORY:-recsys-dev-artifact-registry} 
 IMAGE_NAME=recsys-ranking-predictor      
 IMAGE_TAG=${IMAGE_TAG:-latest}
 

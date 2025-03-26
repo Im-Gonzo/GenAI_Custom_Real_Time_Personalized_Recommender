@@ -16,6 +16,10 @@ from config import (
     LOCATION,
     RANKING_MODEL_FEATURES,
     TOP_K_CANDIDATES,
+    TRANSACTIONS_TABLE,
+    ARTICLES_TABLE,
+    RANKINGS_TABLE,
+    CANDIDATES_TABLE
 )
 from logger import logger
 
@@ -151,7 +155,7 @@ class RankingTransformer:
                 SELECT
                     article_id
                 FROM
-                    `{PROJECT_ID}.recsys_dataset.recsys_transactions`
+                    {TRANSACTIONS_TABLE}
                 WHERE
                     customer_id = @customer_id
             """
@@ -210,7 +214,7 @@ class RankingTransformer:
                     ARRAY_LENGTH(embeddings) as emb_size,
                     ML.DISTANCE(embeddings, {query_vector_str}) as similarity
                 FROM
-                    `{PROJECT_ID}.recsys_dataset.recsys_candidates`
+                    {CANDIDATES_TABLE}
                 ORDER BY
                     similarity 
                 DESC
@@ -257,7 +261,7 @@ class RankingTransformer:
                 SELECT
                     *
                 FROM
-                    `{PROJECT_ID}.recsys_dataset.recsys_articles`
+                    {ARTICLES_TABLE}
                 WHERE
                     article_id IN ({articles_formatted})
             """
@@ -296,7 +300,7 @@ class RankingTransformer:
                 SELECT
                     *
                 FROM
-                    `{PROJECT_ID}.recsys_dataset.recsys_rankings`
+                    {RANKINGS_TABLE}
                 WHERE
                     customer_id = @customer_id
             """
@@ -381,6 +385,7 @@ class RankingTransformer:
 
             # 5. Get customer features
             logger.timer_start("get_customer_features")
+            self.customers_view.sync()
             customer_result = self.customers_view.read(key=[customer_id])
             customer_features = customer_result.to_dict()["features"]
             logger.timer_end("get_customer_features")
@@ -483,7 +488,6 @@ class RankingTransformer:
 
             # Take only the top 10 predictions
             top_10_ranking = ranking[:10]
-
             logger.info(f"📊 Returning top {len(top_10_ranking)} recommendations")
 
             # Log top scores for monitoring

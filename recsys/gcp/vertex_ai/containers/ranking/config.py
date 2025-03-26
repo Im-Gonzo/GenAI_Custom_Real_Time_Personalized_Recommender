@@ -25,13 +25,13 @@ HOST = os.getenv("HOST", "0.0.0.0")
 WORKERS = int(os.getenv("WORKERS", "1"))
 
 # Vertex AI Feature Store
-FEATURE_STORE_ID = os.getenv("FEATURE_STORE_ID", "recsys_feature_store_dev")
-PROJECT_ID = os.getenv("PROJECT_ID", "recsys-dev-gonzo-2")
+FEATURE_STORE_ID = os.getenv("FEATURE_STORE_ID", "recsys_dev_feature_store")
+PROJECT_ID = os.getenv("PROJECT_ID", "recsys-dev-gonzo-1")
 LOCATION = os.getenv("LOCATION", "us-central1")
-DATASET_ID = os.getenv("DATASET_ID", "recsys_dataset")
+DATASET_ID = os.getenv("DATASET_ID", "recsys_dev_retail_dataset")
 
 # Model Registry
-MODEL_ID = os.getenv("MODEL_ID", "9164593244745498624")
+MODEL_ID = os.getenv("MODEL_ID", "2239024588082118656")
 MODEL_VERSION = os.getenv("MODEL_VERSION", "default")
 
 # Recommendation settings
