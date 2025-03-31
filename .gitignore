@@ -76,3 +76,4 @@ data/preprocessed
 # Models
 notebooks/item_model
 notebooks/query_model
+notebooks/checkpoints
