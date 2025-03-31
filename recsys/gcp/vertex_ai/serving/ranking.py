@@ -20,7 +20,7 @@ class GCPRankingModel(BaseGCPModel):
     def __init__(self, model: XGBClassifier) -> None:
         super().__init__(model)
 
-    def save_to_local(self, output_path: str = "ranking_model") -> str:
+    def save_to_local(self, output_path: str = "ranking_model") -> None:
         """
         Save the ranking model in XGBoost format.
 
@@ -30,9 +30,10 @@ class GCPRankingModel(BaseGCPModel):
         Returns:
             Path where model was saved
         """
-        joblib.dump(self._model, output_path)
+        logger.info(f'Saving model into: {output_path}')
+        joblib.dump(self.model, output_path)
+        logger.info(f'Model successfully saved')
         self.local_model_path = output_path
-        return output_path
 
     @classmethod
     def deploy(cls, model):
