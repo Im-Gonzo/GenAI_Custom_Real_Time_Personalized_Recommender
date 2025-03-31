@@ -40,4 +40,5 @@ resource "google_vertex_ai_endpoint" "rankings_model_endpoint" {
   description  = "Endpoint for Ranking Model"
 
   depends_on = [google_project_service.vertex_ai]
+  
 }
