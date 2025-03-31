@@ -42,9 +42,9 @@ def fetch_feature_view_data(
 
 
 def compute_rankings_dataset(
-    trans_fv: FeatureView,
-    articles_fv: FeatureView,
-    customers_fv: FeatureView,
+    trans_df,
+    articles_df,
+    customers_df,
 ) -> pl.DataFrame:
     """
     Compute ranking dataset using GCP feature views.
@@ -59,22 +59,6 @@ def compute_rankings_dataset(
     """
     total_start = time.time()
     logger.info("Computing rankings dataset")
-
-    # Fetch data from feature views
-    logger.info("Fetching transactions data...")
-    trans_df = fetch_feature_view_data(
-        trans_fv, select_columns=["article_id", "customer_id"]
-    )
-
-    logger.info("Fetching articles data...")
-    articles_df = fetch_feature_view_data(
-        articles_fv, except_columns=["article_description", "embeddings", "image_url"]
-    )
-
-    logger.info("Fetching customers data...")
-    customers_df = fetch_feature_view_data(
-        customers_fv, select_columns=["customer_id", "age"]
-    )
 
     # Type casting
     trans_df = trans_df.with_columns(pl.col("article_id").cast(pl.Utf8))
