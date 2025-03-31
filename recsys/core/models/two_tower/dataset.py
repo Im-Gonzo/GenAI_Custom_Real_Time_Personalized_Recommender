@@ -44,13 +44,13 @@ class TwoTowerDataset:
     def get_train_val_split(self) -> Tuple[tf.data.Dataset, tf.data.Dataset]:
         """Create train and validation datasets."""
         logger.info("Creating train/validation split...")
-
+        
         train_df, val_df, test_df, _, _, _ = train_validation_test_split(
             df=self._training_data,
             validation_size=settings.TWO_TOWER_DATASET_VALIDATION_SPLIT_SIZE,
             test_size=settings.TWO_TOWER_DATASET_TEST_SPLIT_SIZE,
         )
-
+        print(train_df['article_id'].unique().to_list())
         # Create TensorFlow datasets
         train_ds = (
             self.df_to_ds(train_df)

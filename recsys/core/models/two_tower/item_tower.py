@@ -4,7 +4,7 @@ Item tower implementation for the two-tower recommendation model.
 
 from typing import List
 import tensorflow as tf
-from tensorflow.keras.layers import StringLookup
+from tensorflow.keras.layers import StringLookup, IntegerLookup
 from recsys.config import settings
 
 
@@ -38,7 +38,7 @@ class ItemTower(tf.keras.Model):
 
         self.item_embedding = tf.keras.Sequential(
             [
-                StringLookup(vocabulary=item_ids, mask_token=None),
+                IntegerLookup(vocabulary=item_ids, mask_token=None),
                 tf.keras.layers.Embedding(
                     len(item_ids) + 1,  # Additional embedding for unknown tokens
                     embed_dim,

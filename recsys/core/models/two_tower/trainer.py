@@ -17,16 +17,7 @@ class TwoTowerTrainer:
         self._model = model
 
     def train(self, train_ds: tf.data.Dataset, val_ds: tf.data.Dataset) -> Dict:
-        """
-        Train the two-tower model.
-
-        Args:
-            train_ds: Training dataset
-            val_ds: Validation dataset
-
-        Returns:
-            Training history
-        """
+        """Train the two-tower model."""
         logger.info("Initializing model training...")
 
         # Initialize query tower normalization
@@ -40,11 +31,35 @@ class TwoTowerTrainer:
 
         # Compile model
         self._model.compile(optimizer=optimizer)
+        
+        # Define callbacks
+        callbacks = [
+            tf.keras.callbacks.EarlyStopping(
+                monitor='val_loss',
+                patience=50,
+                restore_best_weights=True
+            ),
+            tf.keras.callbacks.ReduceLROnPlateau(
+                monitor='val_loss',
+                factor=0.5,
+                patience=10,
+                min_lr=1e-6
+            ),
+            tf.keras.callbacks.ModelCheckpoint(
+                filepath='checkpoints/best_model',
+                monitor='val_loss',
+                save_best_only=True,
+                save_weights_only=True
+            )
+        ]
 
         # Train model
         logger.info(f"Starting training for {settings.TWO_TOWER_NUM_EPOCHS} epochs")
         history = self._model.fit(
-            train_ds, validation_data=val_ds, epochs=settings.TWO_TOWER_NUM_EPOCHS
+            train_ds, 
+            validation_data=val_ds, 
+            epochs=settings.TWO_TOWER_NUM_EPOCHS,
+            callbacks=callbacks,
         )
 
         logger.info("Training completed")

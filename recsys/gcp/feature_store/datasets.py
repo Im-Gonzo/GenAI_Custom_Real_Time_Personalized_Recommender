@@ -7,15 +7,13 @@ from loguru import logger
 from google.cloud import aiplatform
 from typing import Dict, List, Optional
 
-from recsys.gcp.bigquery.client import fetch_feature_view_data
 from vertexai.resources.preview.feature_store import FeatureView
 
 
 def create_training_dataset(
-    trans_view: FeatureView,
-    articles_view: FeatureView,
-    customers_view: FeatureView,
-    feature_columns: Optional[Dict[str, List[str]]] = None,
+    trans_df,
+    articles_df,
+    customers_df,
 ) -> pl.DataFrame:
     """
     Create training dataset by joining feature views.
@@ -28,37 +26,9 @@ def create_training_dataset(
 
     Returns:
         DataFrame containing joined features
-    """
-    if feature_columns is None:
-        feature_columns = {
-            "transactions": [
-                "customer_id",
-                "article_id",
-                "t_dat",
-                "price",
-                "month_sin",
-                "month_cos",
-            ],
-            "customers": ["customer_id", "age", "club_member_status", "age_group"],
-            "articles": ["article_id", "garment_group_name", "index_group_name"],
-        }
-
-    logger.info("Fetching transactions data...")
-    trans_df = fetch_feature_view_data(
-        trans_view, select_columns=feature_columns["transactions"]
-    )
-
-    logger.info("Fetching customer data...")
-    customers_df = fetch_feature_view_data(
-        customers_view, select_columns=feature_columns["customers"]
-    )
-
-    logger.info("Fetching article data...")
-    articles_df = fetch_feature_view_data(
-        articles_view, select_columns=feature_columns["articles"]
-    )
-
+    """   
     logger.info("Joining features...")
+    articles_df = articles_df.with_columns(pl.col('article_id').cast(pl.Int64))
     return trans_df.join(customers_df, on="customer_id").join(
         articles_df, on="article_id"
     )
