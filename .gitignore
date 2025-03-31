@@ -71,6 +71,7 @@ src/
 # Datasets
 data/*.csv
 data/images/
+data/preprocessed
 
 # Models
 notebooks/item_model
