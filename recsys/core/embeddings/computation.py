@@ -19,24 +19,17 @@ def compute_embeddings(df: pl.DataFrame, model: Any) -> pl.DataFrame:
     Returns:
         DataFrame with article IDs and their corresponding embeddings
     """
-    pandas_df = df.to_pandas()
+    
 
-    ds = tf.data.Dataset.from_tensor_slices(
-        {col: pandas_df[col] for col in pandas_df.columns}
-    )
+    article_ids = df['article_id']
+    df = df.select(pl.exclude('article_id'))
 
-    candidate_embeddings = ds.batch(2048).map(lambda x: (x["article_id"], model(x)))
-
-    all_article_ids = tf.concat([batch[0] for batch in candidate_embeddings], axis=0)
-    all_embeddings = tf.concat([batch[1] for batch in candidate_embeddings], axis=0)
-
-    all_article_ids = all_article_ids.numpy().astype(int).tolist()
-    all_embeddings = all_embeddings.numpy().tolist()
+    embeddings = model.predict_proba(df)
 
     embeddings_df = pl.DataFrame(
         {
-            "article_id": all_article_ids,
-            "embeddings": all_embeddings,
+            "article_id": article_ids,
+            "embeddings": embeddings,
         }
     )
 
