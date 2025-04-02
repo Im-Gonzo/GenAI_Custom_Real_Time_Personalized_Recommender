@@ -7,7 +7,8 @@ from typing import List
 
 
 def preprocess_candidates(
-    train_df: pl.DataFrame, candidate_features: List[str]
+    train_df: pl.DataFrame,
+    candidate_features: List
 ) -> pl.DataFrame:
     """
     Preprocess candidate features for embedding generation.
@@ -19,9 +20,9 @@ def preprocess_candidates(
     Returns:
         Preprocessed DataFrame with unique candidates
     """
-    # Select candidate features from the training DF
+    # # Select candidate features from the training DF
     item_df = train_df.select(candidate_features)
-
+    
     # Drop duplicate rows based on the 'article_id' to get unique candidates
     item_df = item_df.unique(subset=["article_id"], keep="first")
 
